@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 
-from datetime import datetime
-from os import system
-import re
-import webbrowser
-import pyttsx3
+import re, os, webbrowser
+import pyttsx3, wikipedia
 import speech_recognition as SR
-import wikipedia
-import googlesearch
+
+from googlesearch import search
+from datetime import datetime
+
+from ExternalPath import AppPath, WebPath
+
+def clrscr():
+    if os.name == "posix":
+        os.system("clear")
+    else:
+        os.system("cls")
 
 class Assistant:
     def __init__(self) -> None:
@@ -61,17 +67,19 @@ class Assistant:
         if not query:
             return
         
-        if any( text in query for text in ['exit', 'quit'] ):
+        if any( text in query for text in ['exit', 'quit', 'close'] ):
             self.__Terminate = True
         
-        elif re.match(r'search .* in google', query):
+        elif re.search(r'search .* in google', query):
+            # Search the given query in google. uses googlesearch modules search function to get some results.
+            # default is 10 results. It returns a generator which we convert to a list before showing to user.
             searchQuery = re.findall(r'search (.*) in google', query)[0]
             
             if not searchQuery:
                 self.__speak("Invalid Google Search Query Found!!")
                 return
             
-            results = googlesearch.search(term=searchQuery)
+            results = search(term=searchQuery) # googlesearch.search
             if results:
                 results = list(results)
                 self.__speak("Found Following Results: ")
@@ -82,6 +90,10 @@ class Assistant:
                 self.__speak("No Search Result Found!!")
                     
         elif 'wikipedia' in query:
+            # searches wikipedia for the given query. Uses wikipedia module. The summary function returns a brief info about the searched query.
+            # The number of sentences returned are set as 3. The value however can be changed
+            # Error handling for DisambiguationError is provided which occurs when there are more than one related pages found.
+            # The error message returns a string containing all the possible pages seperated by newline character.
             try:
                 query = query.replace('wikipedia', "")
                 self.__speak('Searching Wikipedia...')
@@ -100,18 +112,34 @@ class Assistant:
                     for option in options[:6]:
                         self.__speak(option)
                     self.__speak("... and more")
-                       
-        elif 'open youtube' in query:
-            self.__speak('opening youtube in chrome...')
-            webbrowser.open_new('https://www.youtube.com')
             
-        elif 'open chrome' in query:
-            self.__speak('opening chrome...')
-            webbrowser.open_new('https://www.google.com')
+        elif re.search('open .*', query):
+            # Executes open application or url queries. 
+            # Checks if application is present in the app dictionary and opens corresponding file if found.
+            # Checks if application is present in the url dictionary and opens the corresponding link if found.
+            # If not found as application or url, notifies the user as could not resolve application. 
             
-        elif 'open google' in query:
-            query = query.replace('open google', "")
-            webbrowser.open_new('https://www.google.com')   
+            application = re.findall(r'open (.*)', query)[0]
+            
+            self.__speak(f"Attempting to open {application}....")
+            if application in AppPath.keys():
+                try:
+                    os.startfile(AppPath[application.strip()])
+                except:
+                    self.__speak(f"Sorry! Failed to open {application}")
+            elif application in WebPath.keys():
+                try:
+                    webbrowser.open_new(WebPath[application])
+                except:
+                    self.__speak(f"Sorry! Failed to open {application}")
+            else:
+                self.__speak(f"Oops! Couldn't resolve {application}")
+                    
+            
+        elif 'the time' in query:
+            date_time = datetime.now()
+            hour, minute, second = date_time.hour, date_time.minute, date_time.second
+            self.__speak(f"Current time is {hour}:{minute}:{second}")
         
         else:
             self.__speak('could not interprete the query')
@@ -119,10 +147,11 @@ class Assistant:
            
     def run(self):
         '''Initiates the assistant listening and executing query process in a loop until user asks to exit'''
-        system("clear")
         self.__wishUser()
+        clrscr()
         while not self.__Terminate:
-            self.__executeQuery( self.__listenQuery() )
+            query = self.__listenQuery()
+            self.__executeQuery( query )
 
 
     def setProperties(self, energy_threshold:int|None=None, pause_threshold:float|None=None, phrase_threshold:float|None=None, non_speaking_duration:float|None=None):
@@ -154,5 +183,6 @@ class Assistant:
 
 if __name__ == "__main__":
     assistant = Assistant()
-    assistant._Assistant__executeQuery("search  in google")
+    assistant._Assistant__executeQuery(assistant._Assistant__listenQuery())
+    #assistant.run()
     assistant.close()
