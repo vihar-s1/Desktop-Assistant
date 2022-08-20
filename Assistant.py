@@ -22,12 +22,11 @@ class Assistant:
         self.__engine.setProperty('voice', self.__engine.getProperty('voices')[2].id)
         
         self.__Terminate = False
-        self.__recognizer = SR.Recognizer()
-        
-        self.__recognizer.energy_threshold = 200
-        self.__recognizer.pause_threshold = 1
-        self.__recognizer.phrase_threshold = 0.3
-        self.__recognizer.non_speaking_duration = 0.5
+        #self.__recognizer = SR.Recognizer()
+        self.__energy_threshold = 300
+        self.__pause_threshold = 1
+        self.__phrase_threshold = 0.3
+        self.__non_speaking_duration = 0.5
 
     def __speak(self, text):
         '''Tells Assistant to speak the given text and also prints on the console'''
@@ -50,10 +49,17 @@ class Assistant:
         '''Listens for microphone input and returns string of the input'''
         with SR.Microphone() as source:
             print("\nListening...")
-            audio = self.__recognizer.listen(source)
+            recognizer = SR.Recognizer()
+            
+            recognizer.energy_threshold = self.__energy_threshold
+            recognizer.pause_threshold = self.__pause_threshold
+            recognizer.phrase_threshold = self.__phrase_threshold
+            recognizer.non_speaking_duration = self.__non_speaking_duration
+            
+            audio = recognizer.listen(source)
         try: 
             print("Recognizing...\n")
-            query = self.__recognizer.recognize_google(audio, language="en-in") # language = English(en)-India(in)
+            query = recognizer.recognize_google(audio, language="en-in") # language = English(en)-India(in)
             query = query
             print(f"user said: {query}")
         except:
@@ -158,31 +164,35 @@ class Assistant:
         '''
         Set properties for the listening
 
-        - energy_threshold: Minimum audio energy to consider for recording (default = 200)
+        - energy_threshold: Minimum audio energy to consider for recording (default = 300)
         - pause_threshold: Seconds of non-speaking audio to conclude a phrase (default = 1)
         - phrase_threshold: Minimum seconds of speaking required to be considered as a phrase (audio with time less than this are ignored to rule out clicks and pops) (default = 0.3)
         - non_speaking_duration: seconds of non-speaking audio to keep on both the sides of the recording (default = 0.5)
         '''
         if energy_threshold:
-            self.__recognizer.energy_threshold = energy_threshold
+            self.__energy_threshold = energy_threshold
         if pause_threshold:
-            self.__recognizer.pause_threshold = pause_threshold
+            self.__pause_threshold = pause_threshold
         if phrase_threshold:
-            self.__recognizer.phrase_threshold = phrase_threshold
+            self.__phrase_threshold = phrase_threshold
         if non_speaking_duration:
-            self.__recognizer.non_speaking_duration = non_speaking_duration
+            self.__non_speaking_duration = non_speaking_duration
             
              
     
     def close(self):
         '''Deletes the assistant's voice engine, recorder (recognizer) and the rest of the variables'''
+        self.__speak("Exiting...")
         del self.__engine
-        del self.__recognizer
+        #del self.__recognizer
         del self.__Terminate
     
 
 if __name__ == "__main__":
     assistant = Assistant()
-    assistant._Assistant__executeQuery(assistant._Assistant__listenQuery())
-    #assistant.run()
+    assistant.run()
     assistant.close()
+    input("Press enter to continue...")
+    
+    
+    
