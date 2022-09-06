@@ -19,7 +19,7 @@ class Assistant:
     def __init__(self) -> None:
         '''Creates an instance of the Voice-Assistant, initiates the engine, and assigns one of the preconfigured voice to it'''
         self.__engine = pyttsx3.init('sapi5')
-        self.__engine.setProperty('voice', self.__engine.getProperty('voices')[2].id)
+        self.__engine.setProperty('voice', self.__engine.getProperty('voices')[1].id)
         
         self.__Terminate = False
         #self.__recognizer = SR.Recognizer()
@@ -31,7 +31,7 @@ class Assistant:
     def __speak(self, text):
         '''Tells Assistant to speak the given text and also prints on the console'''
         self.__engine.say(text)
-        print(f"Assistant: {text}\n")
+        print(f"Assistant:\n{text}\n")
         self.__engine.runAndWait()
         
     def __wishUser(self):
@@ -61,7 +61,7 @@ class Assistant:
             print("Recognizing...\n")
             query = recognizer.recognize_google(audio, language="en-in") # language = English(en)-India(in)
             query = query
-            print(f"user said: {query}")
+            print(f"user:\n{query}")
         except:
             self.__speak("Say that again please...")
             return None
@@ -75,6 +75,18 @@ class Assistant:
         
         if any( text in query for text in ['exit', 'quit', 'close'] ):
             self.__Terminate = True
+        
+        elif 'what can you do' in query:
+            self.__speak('''Following is a list of tasks I can do...
+                         - Search your query in google and return upto 10 results
+                         - Get a wikipedia search summary of upto 3 sentences
+                         - Open a certain preset applications or websites as per request
+                         - I can also tell you the time of the day...''')
+        
+        elif re.match(r'[what|all|list].*apps.*.*open', query):
+            self.__speak("Here is a list of all apps and websites I can open:")
+            self.__speak("\n".join(AppPath.keys()))
+            self.__speak("\n".join(WebPath.keys()))
         
         elif re.search(r'search .* in google', query):
             # Search the given query in google. uses googlesearch modules search function to get some results.
@@ -142,7 +154,7 @@ class Assistant:
                 self.__speak(f"Oops! Couldn't resolve {application}")
                     
             
-        elif 'the time' in query:
+        elif any(text in query for text in ['the time', 'time please']):
             date_time = datetime.now()
             hour, minute, second = date_time.hour, date_time.minute, date_time.second
             self.__speak(f"Current time is {hour}:{minute}:{second}")
@@ -182,7 +194,9 @@ class Assistant:
     
     def close(self):
         '''Deletes the assistant's voice engine, recorder (recognizer) and the rest of the variables'''
-        self.__speak("Exiting...")
+        
+        self.__speak("Have a Good Day !!!")
+        
         del self.__engine
         #del self.__recognizer
         del self.__Terminate
@@ -193,6 +207,4 @@ if __name__ == "__main__":
     assistant.run()
     assistant.close()
     input("Press enter to continue...")
-    
-    
     
