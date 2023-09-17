@@ -1,5 +1,40 @@
 #. Virtual Environment Files and Folder
 .venv
 
-#. Python Cache Files
+#. Python Files (cache and pyinstaller)
 __pycache__
+*.manifest
+*.spec
+.log
+
+#. system files
+# For MAC-OS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# FOR LINUX
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# FOR WINDOWS
+*.stackdump
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+$RECYCLE.BIN/
+[Dd]esktop.ini
+
+#. Editor Specific
+# Cache files for Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.
+# visual studio code
+.vscode
+.history
+.vsix
