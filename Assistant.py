@@ -1,210 +1,112 @@
-#!/usr/bin/env python
-
 import re, os, webbrowser
-import pyttsx3, wikipedia
-import speech_recognition as SR
-
-from googlesearch import search
+import wikipedia, googlesearch
 from datetime import datetime
 
-from ExternalPath import AppPath, WebPath
+from Extras import AppPath, WebPath
+from VoiceInterface import VoiceInterface
+import Support
 
-def clrscr():
-    if os.name == "posix":
-        os.system("clear")
-    else:
-        os.system("cls")
+LISTENING_ERROR = "Say that again please..."
 
 class Assistant:
-    def __init__(self) -> None:
-        '''Creates an instance of the Voice-Assistant, initiates the engine, and assigns one of the preconfigured voice to it'''
-        self.__engine = pyttsx3.init('sapi5')
-        self.__engine.setProperty('voice', self.__engine.getProperty('voices')[1].id)
+    def __init(self) -> None:
+        """Creates an Assistant instance consisting of an VoiceInterface instance"""
+        self.__voiceInterface = VoiceInterface()
         
-        self.__Terminate = False
-        #self.__recognizer = SR.Recognizer()
-        self.__energy_threshold = 300
-        self.__pause_threshold = 1
-        self.__phrase_threshold = 0.3
-        self.__non_speaking_duration = 0.5
-
-    def __speak(self, text):
-        '''Tells Assistant to speak the given text and also prints on the console'''
-        self.__engine.say(text)
-        print(f"Assistant:\n{text}\n")
-        self.__engine.runAndWait()
-        
-    def __wishUser(self):
-        '''Wishes user based on the hour of the day and asks how it can help'''
-        hour = int(datetime.now().hour)
-        if  0 <= hour < 12:
-            self.__speak("Good Morning!")
-        elif 12 <= hour < 18:
-            self.__speak("Good Afternoon!")
-        else:
-            self.__speak("Good Evening!")
-        self.__speak("How Can I Help You ?")
-        
-    def __listenQuery(self):
-        '''Listens for microphone input and returns string of the input'''
-        with SR.Microphone() as source:
-            print("\nListening...")
-            recognizer = SR.Recognizer()
-            
-            recognizer.energy_threshold = self.__energy_threshold
-            recognizer.pause_threshold = self.__pause_threshold
-            recognizer.phrase_threshold = self.__phrase_threshold
-            recognizer.non_speaking_duration = self.__non_speaking_duration
-            
-            audio = recognizer.listen(source)
-        try: 
-            print("Recognizing...\n")
-            query = recognizer.recognize_google(audio, language="en-in") # language = English(en)-India(in)
-            query = query
-            print(f"user:\n{query}")
-        except:
-            self.__speak("Say that again please...")
-            return None
-            
-        return query.lower()
     
-    def __executeQuery(self, query: str):
-        '''Runs the given query based on certain predefined conditions'''
-        if not query:
-            return
-        
-        if any( text in query for text in ['exit', 'quit', 'close'] ):
-            self.__Terminate = True
-        
-        elif 'what can you do' in query:
-            self.__speak('''Following is a list of tasks I can do...
-                         - Search your query in google and return upto 10 results
-                         - Get a wikipedia search summary of upto 3 sentences
-                         - Open a certain preset applications or websites as per request
-                         - I can also tell you the time of the day...''')
-        
-        elif re.match(r'[what|all|list].*apps.*.*open', query):
-            self.__speak("Here is a list of all apps and websites I can open:")
-            self.__speak("\n".join(AppPath.keys()))
-            self.__speak("\n".join(WebPath.keys()))
-        
-        elif re.search(r'search .* in google', query):
-            # Search the given query in google. uses googlesearch modules search function to get some results.
-            # default is 10 results. It returns a generator which we convert to a list before showing to user.
-            searchQuery = re.findall(r'search (.*) in google', query)[0]
+    def wishUser(self):
+        """Wishes user based on the hour of the day"""
+        hour = int (datetime.now().hour)
+        if 0 <= hour < 12:
+            self.__voiceInterface.speak("Good Morning!")
+        elif 12 <= hour < 18:
+            self.__voiceInterface.speak("Good Afternoon!")
+        else:
+            self.__voiceInterface.speak("Good Evening!")
             
-            if not searchQuery:
-                self.__speak("Invalid Google Search Query Found!!")
-                return
+    
+    def listenQuery(self) -> str:
+        """Listens for microphone input and return string of the input
+
+        Returns:
+            str: the query string obtained from the speech input
+        """
+        query = self.__voiceInterface.listen(True)
+        if query:
+            print(f"User:\n{query}\n")
+            self.__voiceInterface.speak(query)
+        else:
+            print(LISTENING_ERROR)
+            self.__voiceInterface.speak(LISTENING_ERROR)
+        return query
+    
+    
+    def executeQuery(self, query: str) -> None:
+        """Processes the query string and runs the corresponding tasks
+
+        Args:
+            query (str): the query string obtained from speech input
+        """
+        # if any( text in query for text in ['exit', 'quit', 'close'] ):
+        #     return
+        
+        if 'what can you do' in query:
+            Support.explainFeatures(self.__voiceInterface)
+        
+        elif re.match(r'[what|all|list].*apps.*open', query):
+            Support.possibleAppsAndWebs(self.__voiceInterface)
+        
+        elif re.search(r'search .* (in google){0,1}', query):
+            query.replace(" in google", "") # to convert to a generalized format
+            searchQuery = re.findall(r'search (.*)', query)[0]
+            Support.runSearchQuery(self.__voiceInterface, searchQuery)
             
-            results = search(term=searchQuery) # googlesearch.search
-            if results:
-                results = list(results)
-                self.__speak("Found Following Results: ")
-                
-                for i in range(len(results)):
-                    print(i+1, ")", results[i])
-            else:
-                self.__speak("No Search Result Found!!")
-                    
         elif 'wikipedia' in query:
-            # searches wikipedia for the given query. Uses wikipedia module. The summary function returns a brief info about the searched query.
-            # The number of sentences returned are set as 3. The value however can be changed
-            # Error handling for DisambiguationError is provided which occurs when there are more than one related pages found.
-            # The error message returns a string containing all the possible pages seperated by newline character.
-            try:
-                query = query.replace('wikipedia', "")
-                self.__speak('Searching Wikipedia...')
-                results = wikipedia.summary(query,  sentences=3)
-                
-                self.__speak("According to Wikipedia...")
-                self.__speak(results)
-            except wikipedia.exceptions.DisambiguationError as DE:
-                self.__speak(f"\nError Found: {DE.__class__.__name__}")
-                
-                options = str(DE).split("\n")
-                if len(options) < 7:
-                    for option in options:
-                        self.__speak(option)
-                else:
-                    for option in options[:6]:
-                        self.__speak(option)
-                    self.__speak("... and more")
+            # replace only once to prevent changing the query
+            query = query.replace("wikipedia", "", 1)
+            query = query.replace("search", "", 1)
+            Support.wikipediaSearch(self.__voiceInterface, searchQuery, 3)
             
         elif re.search('open .*', query):
-            # Executes open application or url queries. 
-            # Checks if application is present in the app dictionary and opens corresponding file if found.
-            # Checks if application is present in the url dictionary and opens the corresponding link if found.
-            # If not found as application or url, notifies the user as could not resolve application. 
-            
-            application = re.findall(r'open (.*)', query)[0]
-            
-            self.__speak(f"Attempting to open {application}....")
-            if application in AppPath.keys():
-                try:
-                    os.startfile(AppPath[application.strip()])
-                except:
-                    self.__speak(f"Sorry! Failed to open {application}")
-            elif application in WebPath.keys():
-                try:
-                    webbrowser.open_new(WebPath[application])
-                except:
-                    self.__speak(f"Sorry! Failed to open {application}")
-            else:
-                self.__speak(f"Oops! Couldn't resolve {application}")
-                    
-            
-        elif any(text in query for text in ['the time', 'time please']):
-            date_time = datetime.now()
-            hour, minute, second = date_time.hour, date_time.minute, date_time.second
-            self.__speak(f"Current time is {hour}:{minute}:{second}")
+            application = re.findall(r"open (.*)", query)
+            if len(application) == 0:
+                self.__voiceInterface.speak("Which Application Should I Open ?")
+                return
+            application = application[0]
+            try:
+                Support.openApplicationWebsite(self.__voiceInterface, application)
+            except ValueError:
+                self.__voiceInterface.speak(f"Accesspoint Matching {application} not found !")
         
+        elif any(text in query for text in ["the time", "time please"]):
+            Support.tellTime(self.__voiceInterface)
+            
         else:
-            self.__speak('could not interprete the query')
-        
-           
-    def run(self):
-        '''Initiates the assistant listening and executing query process in a loop until user asks to exit'''
-        self.__wishUser()
-        clrscr()
-        while not self.__Terminate:
-            query = self.__listenQuery()
-            self.__executeQuery( query )
-
-
-    def setProperties(self, energy_threshold:int|None=None, pause_threshold:float|None=None, phrase_threshold:float|None=None, non_speaking_duration:float|None=None):
-        '''
-        Set properties for the listening
-
-        - energy_threshold: Minimum audio energy to consider for recording (default = 300)
-        - pause_threshold: Seconds of non-speaking audio to conclude a phrase (default = 1)
-        - phrase_threshold: Minimum seconds of speaking required to be considered as a phrase (audio with time less than this are ignored to rule out clicks and pops) (default = 0.3)
-        - non_speaking_duration: seconds of non-speaking audio to keep on both the sides of the recording (default = 0.5)
-        '''
-        if energy_threshold:
-            self.__energy_threshold = energy_threshold
-        if pause_threshold:
-            self.__pause_threshold = pause_threshold
-        if phrase_threshold:
-            self.__phrase_threshold = phrase_threshold
-        if non_speaking_duration:
-            self.__non_speaking_duration = non_speaking_duration
-            
-             
+            self.__voiceInterface.speak("could not interprete the query")
+    
     
     def close(self):
-        '''Deletes the assistant's voice engine, recorder (recognizer) and the rest of the variables'''
+        """Close the VoiceInterface instance and delete other variables"""
+        self.__voiceInterface.close()
+        del self.__voiceInterface
         
-        self.__speak("Have a Good Day !!!")
-        
-        del self.__engine
-        #del self.__recognizer
-        del self.__Terminate
     
+    def reset(self):
+        """Re-instantiate VoiceInterface instance and other variables"""
+        if self.__voiceInterface:
+            self.__voiceInterface.close()
+            del self.__voiceInterface
+        self.__voiceInterface = VoiceInterface()
+        
+
+def __main__():
+    assistant = Assistant()
+    assistant.wishUser()
+    Support.clrscr()
+    while True:
+        query = assistant.listenQuery()
+        assistant.executeQuery(query)
+
 
 if __name__ == "__main__":
-    assistant = Assistant()
-    assistant.run()
-    assistant.close()
-    input("Press enter to continue...")
-    
+    __main__()
