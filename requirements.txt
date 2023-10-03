@@ -24,7 +24,7 @@ pywin32==306
 requests==2.31.0
 soupsieve==2.5
 speechrecognition==3.10.0
-urllib3==2.0.5
+urllib3==2.0.6
 wheel==0.41.2
 wikipedia==1.4.0
 
