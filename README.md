@@ -1,4 +1,4 @@
-# Desktop Assistant
+# 🖥️ Desktop Assistant
 
 ![forks](https://img.shields.io/github/forks/vihar-s1/Desktop-Assistant?style=for-the-badge&color=dark-green)
 ![Watchers](https://img.shields.io/github/watchers/vihar-s1/Desktop-Assistant?style=for-the-badge&color=dark-green)
@@ -8,50 +8,49 @@
 
 <!-- ![Project Logo](logo.png) -->
 
-A simple voice-assisted desktop assistant made in python. The assistant will have the basic features supporting daily laptop usage.
+A simple voice-assisted desktop assistant made in Python. The assistant will have basic features supporting daily laptop usage.
 
 ## Table of Contents
 
-- [Desktop Assistant](#desktop-assistant)
+- [🖥️ Desktop Assistant](#️-desktop-assistant)
   - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-  - [Contributing](#contributing)
-  - [Bug Reports and Feature Requests](#bug-reports-and-feature-requests)
+  - [🚀 Introduction](#-introduction)
+  - [✨ Features](#-features)
+  - [🚀 Getting Started](#-getting-started)
+    - [📋 Prerequisites](#-prerequisites)
+    - [🛠️ Installation](#️-installation)
+  - [🤝 Contributing](#-contributing)
+  - [🐞 Bug Reports and Feature Requests](#-bug-reports-and-feature-requests)
+  - [💬 Discussion Groups](#-discussion-groups)
 
-## Introduction
+## 🚀 Introduction
 
-- A python based desktop assistant configured to automate of some of the day-to-day tasks and help person save some time.
-- Voice assistance is used to provide a hands-free interface to the user as the assistant can run in the background while perform your day-to-day tasks.
+- A Python-based desktop assistant configured to automate some of the day-to-day tasks and help save time.
+- Voice assistance is used to provide a hands-free interface to the user as the assistant can run in the background while performing day-to-day tasks.
 - `Extras.py` and `Support.py` files are for having additional globally required variables, and query functions handling individual queries respectively.
-- The  `VoiceInterface.py` file contains the **_VoiceInterface_** class which handles the abstraction of user voice recognition and assistant speech.
+- The `VoiceInterface.py` file contains the **_VoiceInterface_** class which handles the abstraction of user voice recognition and assistant speech.
 - The `Assistant.py` file contains the main code integrating everything together to run the assistant properly.
 
-## Features
+## ✨ Features
 
-List the key features of your project. You can use bullet points for this section.
+- Google and Wikipedia searches 🌐
+- Run applications or websites from a predefined map/list 🚀
+- Tell time of the day in _hour **:** minute **:** second_ format ⏰
 
-- Google and Wikipedia searches
-- Run application or website from a predefined map/list
-- Tell time of the day _hour **:** minute **:** sec_ format
-
-## Getting Started
+## 🚀 Getting Started
 
 - Fork or download the project.
-- Install the python dependancies mentioned in the `requirements.txt` file using pip or pip3.
-- Run the main python file named `Assistant.py` in the project root folder to run the assistant.
-  
-### Prerequisites
+- Install the Python dependencies mentioned in the `requirements.txt` file using pip or pip3.
+- Run the main Python file named `Assistant.py` in the project root folder to run the assistant.
 
-- The project is coded using `python3.11.0`, so it would be best to install an equivalent or later version.
+### 📋 Prerequisites
+
+- The project is coded using `Python 3.11.0`, so it would be best to install an equivalent or later version.
 - The modules required are listed in the requirements.txt file which can be installed as discussed below.
 
-### Installation
+### 🛠️ Installation
 
-1. Download and extract the zip file or clone the repository using below command.
+1. Download and extract the zip file or clone the repository using the following command.
 
 ```bash
 git clone https://github.com/vihar-s1/Desktop-Assistant
@@ -71,7 +70,7 @@ pip install -r requirements.txt
 python Assistant.py
 ```
 
-## Contributing
+## 🤝 Contributing
 
 - If you want to contribute, follow the contribution guidelines here: [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md)
   
@@ -89,9 +88,13 @@ pip install -r requirements.txt
 bash updateRequirementsFile.sh
 ```
 
-## Bug Reports and Feature Requests
+## 🐞 Bug Reports and Feature Requests
 
 - If you encountered an issue or want to report a bug, following is the [Bug Report Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) you will be asked to follow.
 - Any new feature requests will also appreciated if it follows the predefined [Feature Request Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
 
 > **NOTE:** The templates are predefined and integrated in the repository so you can easily go to the [Issues Tab](https://github.com/vihar-s1/Desktop-Assistant/issues) and start writing your bug report, or feature request without any problem.
+
+## 💬 Discussion Groups
+
+To discuss about the project in depth with the contributors of the project about new features, bug requests, or just suggestions, join the [Matrix Space](https://matrix.to/#/#desktop-assistant-github-project:matrix.org) or go to the [Discussion Page](https://github.com/vihar-s1/Desktop-Assistant/discussions) of the repository.
