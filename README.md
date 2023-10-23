@@ -52,23 +52,23 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
 
 1. Download and extract the zip file or clone the repository using the following command.
 
-```bash
-git clone https://github.com/vihar-s1/Desktop-Assistant
-```
+    ```bash
+    git clone https://github.com/vihar-s1/Desktop-Assistant
+    ```
 
 2. In the project root directory run following commands to create a virtual environment, activate it, and install the python module dependencies.
 
-```bash
-python -m venv .venv
-source .venv/Scripts/activate
-pip install -r requirements.txt
-```
+    ```bash
+    python -m venv .venv
+    source .venv/Scripts/activate
+    pip install -r requirements.txt
+    ```
 
 3. Once installed, simply run the `Assistant.py` file to start using the Assistant.
 
-```bash
-python Assistant.py
-```
+    ```bash
+    python Assistant.py
+    ```
 
 ## 🤝 Contributing
 

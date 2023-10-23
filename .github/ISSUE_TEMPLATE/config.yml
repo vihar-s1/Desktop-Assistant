@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Matrix Communication Space
+    url: https://matrix.to/#/#desktop-assistant-github-project:matrix.org
+    about: Join this Space to have discussions with other developers contributing
+  - name: Discussion Page
+    url: https://github.com/vihar-s1/Desktop-Assistant/discussions
+    about: Github Discussion Page for the Repository

@@ -1,0 +1,47 @@
+name: Documentation Issue📋
+description: Improvements or addition to documentations
+title: "[DOC]: "
+labels: ["documentation"]
+# projects: []
+# assignees: ["vihar-s1"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A good documentation is always helpful for first time users to begin with the project or users returing after a break!
+        Help us maintain a good standard of documentation for the project.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Suggestions
+      description: |
+        Tell us about the issues or improvements you think are required ! 
+        Use Screenshots where necessary to assist explanation.
+      placeholder: Tell us what you imagined!
+    validations:
+      required: true
+
+  - type: dropdown
+    id: suggestion-type
+    attributes:
+      label: Type of Suggestion
+      description: Is this suggestion a documentation bug or addition?
+      options:
+        - New Information
+        - Documentation Bug
+      default: 0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Check-List
+      description: Please make sure to check the following milestones before submitting the bug report!
+      options:
+        - label: I have checked that a similar kind of feature request does not already exist!
+          required: true
+        - label: I have read the [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md)
+          required: true
+        - label: I want to work on this documentation update !

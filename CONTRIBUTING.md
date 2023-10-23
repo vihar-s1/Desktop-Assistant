@@ -8,23 +8,24 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
 
 2. **Make Changes:** Work on what interests you - add new features, fix bugs, or improve documentation on a **_separate branch_**. It's your playground!
 
-```bash
-git checkout -b <new-branch-name>
-```
+    ```bash
+    git checkout -b <new-branch-name>
+    ```
 
 3. **Commit Changes:** Use clear and simple commit messages. For example:
-   - "Added a weather command"
-   - "Fixed voice recognition bug"
 
-```bash
-git commit -m "<mandatory commit message here>" -m "<optional commit description here>"
-```
+    - "Added a weather command"
+    - "Fixed voice recognition bug"
+
+        ```bash
+        git commit -m "<mandatory commit message here>" -m "<optional commit description here>"
+        ```
 
 4. **Push to Your Fork:** Send your changes back to your forked repository.
 
-```bash
-git push origin <branch-name>
-```
+    ```bash
+    git push origin <branch-name>
+    ```
 
 5. **Create a Pull Request (PR):** Open a PR to the main project repository. Describe your changes briefly and why they're awesome.
 

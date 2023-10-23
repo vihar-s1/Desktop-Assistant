@@ -1,0 +1,46 @@
+name: Feature Request✨
+description: Request a new feature or enhancement
+title: "[FEAT]: "
+labels: ["enhancement"]
+# projects: []
+# assignees: ["vihar-s1"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping us improve the project with additional features and improvements!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Idea
+      description: |
+        Tell us about this new feature you thought of ! 
+        Use Screenshots where necessary to assist explanation.
+      placeholder: Tell us what you imagined!
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution Approach
+      description: Please tell us about any approach you have thought of about the feature !
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any additional Information You would like to give about this feature,
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Check-List
+      description: Please make sure to check the following milestones before submitting the bug report!
+      options:
+        - label: I have checked that a similar kind of feature request does not already exist!
+          required: true
+        - label: I have read the [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md)
+          required: true
+        - label: I want to work on this feature-request ! (Solution Approach Required)
