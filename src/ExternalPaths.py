@@ -23,3 +23,11 @@ WebPath = {
     'drive' : 'https://drive.google.com',
     'geeks for geeks' : 'https://geeksforgeeks.org'
 }
+
+
+features = {
+    "search your query in google and return upto 10 results",
+    "get a wikipedia search summary of upto 3 sentences",
+    "open a certain preset applications or websites as per request",
+    "tell you the time of the day"
+}

@@ -1,23 +1,27 @@
-import os, re
-import googlesearch, wikipedia
-from Extras import AppPath, WebPath, features
-from VoiceInterface import VoiceInterface
+import os
 from datetime import datetime
 
-def clrscr():
+import googlesearch
+import wikipedia
+
+from ExternalPaths import AppPath, WebPath, features
+from VoiceInterface import VoiceInterface
+
+
+def clear_screen():
     if os.name == "posix":
         os.system("clear")
     else:
         os.system("cls")
         
         
-def possibleAppsAndWebs(vi: VoiceInterface) -> None:
+def possible_apps_and_webs(vi: VoiceInterface) -> None:
     vi.speak("Here is a list of all apps and websites I can open:")
     vi.speak("\n".join(AppPath.keys()))
     vi.speak("\n".join(WebPath.keys()))
     
 
-def explainFeatures(vi: VoiceInterface) -> None:
+def explain_features(vi: VoiceInterface) -> None:
     """Explains the features available
 
     Args:
@@ -28,20 +32,20 @@ def explainFeatures(vi: VoiceInterface) -> None:
         vi.speak(f"--> {feature}")
     
 
-def runSearchQuery(vi: VoiceInterface, searchQuery: str) -> None:
-    """Performs google seach based on some terms
+def run_search_query(vi: VoiceInterface, search_query: str) -> None:
+    """Performs google search based on some terms
 
     Args:
         vi (VoiceInterface): VoiceInterface instance used to speak
-        searchQuery (str): the query term to be searched in google
+        search_query (str): the query term to be searched in google
     """
     if not isinstance(vi, VoiceInterface):
-        raise ValueError(f"Arguement 'vi' should be of type {VoiceInterface}, found {type(vi)}")
-    if not searchQuery:
+        raise ValueError(f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}")
+    if not search_query:
         vi.speak("Invalid Google Search Query Found!!")
         return
     
-    results = googlesearch.search(term=searchQuery)
+    results = googlesearch.search(term=search_query)
     if not results: vi.speak("No Search Result Found!!")
     
     try:
@@ -49,22 +53,22 @@ def runSearchQuery(vi: VoiceInterface, searchQuery: str) -> None:
         vi.speak("Found Following Results: ")
         for i in range(len(results)):
             print(i+1, ")", results[i])
-    except Exception as eobj:
-        print(eobj.__str__)
+    except Exception as error:
+        print(error.__str__)
         
 
-def wikipediaSearch(vi: VoiceInterface, searchQuery: str, sentenceCount:int=3) -> None:
+def wikipedia_search(vi: VoiceInterface, search_query: str, sentence_count:int=3) -> None:
     """Searches wikipedia for the given query and returns fixed number of statements in response.
     Disambiguation Error due to multiple similar results is handled. Speaks the options in this case.
 
     Args:
         vi (VoiceInterface): VoiceInterface instance used to speak.
-        searchQuery (str): The query term to search in wikipedia
-        sentenceCount (int, optional): The number of sentences to speak in case of direct match. Defaults to 3.
+        search_query (str): The query term to search in wikipedia
+        sentence_count (int, optional): The number of sentences to speak in case of direct match. Defaults to 3.
     """
     try:
         vi.speak("Searching Wikipedia...")
-        results = wikipedia.summary(searchQuery, sentences=sentenceCount)
+        results = wikipedia.summary(search_query, sentences=sentence_count)
         
         vi.speak("According to wikipedia...")
         vi.speak(results)
@@ -78,39 +82,39 @@ def wikipediaSearch(vi: VoiceInterface, searchQuery: str, sentenceCount:int=3) -
             vi.speak("... and more")
         
 
-def openApplicationWebsite(vi: VoiceInterface, searchQuery: str) -> None:
-    """Attempts to raise the application or website by finding the accesspoint in the AppPath/WebPath dictionaries
+def open_application_website(vi: VoiceInterface, search_query: str) -> None:
+    """Attempts to raise the application or website by finding the access-point in the AppPath/WebPath dictionaries
 
     Args:
         vi (VoiceInterface): VoiceInterface instance used to speak.
-        searchQuery (str): The website or application name
+        search_query (str): The website or application name
 
     Raises:
-        ValueError: Throws exception in case neither app nor web accesspoint is present.
+        ValueError: Throws exception in case neither app nor web access-point is present.
     """
-    vi.speak(f"Attempting to open {searchQuery}...")
-    if searchQuery in AppPath.keys():
-        try:  os.startfile(AppPath[searchQuery.strip()])
-        except Exception as eobj:
-            vi.speak(f"Error: {eobj}: Failed to open {searchQuery}")
+    vi.speak(f"Attempting to open {search_query}...")
+    if search_query in AppPath.keys():
+        try:  os.startfile(AppPath[search_query.strip()])
+        except Exception as error:
+            vi.speak(f"Error: {error}: Failed to open {search_query}")
         
-    elif searchQuery in WebPath.keys():
-        try:  os.startfile(WebPath[searchQuery.strip()])
-        except Exception as eobj:
-            vi.speak(f"Error: {eobj}: Failed to open {searchQuery}")
+    elif search_query in WebPath.keys():
+        try:  os.startfile(WebPath[search_query.strip()])
+        except Exception as error:
+            vi.speak(f"Error: {error}: Failed to open {search_query}")
     
     else:
-        raise ValueError(f"Missing Accesspoint for {searchQuery}")
+        raise ValueError(f"Missing Access-point for {search_query}")
 
 
-def tellTime(vi: VoiceInterface) -> None:
+def tell_time(vi: VoiceInterface) -> None:
     """Tells the time of the day with timezone
 
     Args:
         vi (VoiceInterface): Voice interface instance used to speak
     """
     if not isinstance(vi, VoiceInterface):
-        raise ValueError(f"Arguement 'vi' should be of type {VoiceInterface}, found {type(vi)}")
+        raise ValueError(f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}")
     
     date_time = datetime.now()
     hour, minute, second = date_time.hour, date_time.minute, date_time.second

@@ -4,29 +4,27 @@
 #
 #    pip-compile --no-annotate --output-file=requirements_temp.txt requirements.txt
 #
-beautifulsoup4==4.12.2
-build==1.0.3
-certifi==2023.7.22
-charset-normalizer==3.2.0
-click==8.1.7
-colorama==0.4.6
-comtypes==1.2.0
-googlesearch-python==1.2.3
-idna==3.4
-packaging==23.1
-pip-tools==7.3.0
-pipdeptree==2.13.0
-pyaudio==0.2.13
-pypiwin32==223
-pyproject-hooks==1.0.0
-pyttsx3==2.90
-pywin32==306
-requests==2.31.0
-soupsieve==2.5
-speechrecognition==3.10.0
-urllib3==2.0.7
-wheel==0.41.2
-wikipedia==1.4.0
+beautifulsoup4~=4.12.2
+build~=1.0.3
+certifi~=2023.7.22
+charset-normalizer~=3.2.0
+click~=8.1.7
+colorama~=0.4.6
+comtypes~=1.2.0
+googlesearch-python~=1.2.3
+idna~=3.4
+packaging~=23.1
+pip-tools~=7.3.0
+pipdeptree~=2.13.0
+pyaudio~=0.2.13
+pyproject-hooks~=1.0.0
+pyttsx3~=2.90
+requests~=2.31.0
+soupsieve~=2.5
+speechrecognition~=3.10.0
+urllib3~=2.0.7
+wheel~=0.41.2
+wikipedia~=1.4.0
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

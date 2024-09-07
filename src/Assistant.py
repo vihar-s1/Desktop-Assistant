@@ -1,20 +1,18 @@
-import re, os, webbrowser
-import wikipedia, googlesearch
+import re
 from datetime import datetime
 
-from Extras import AppPath, WebPath
-from VoiceInterface import VoiceInterface
 import Support
+from VoiceInterface import VoiceInterface
 
 LISTENING_ERROR = "Say that again please..."
 
 class Assistant:
-    def __init(self) -> None:
+    def __init__(self):
         """Creates an Assistant instance consisting of an VoiceInterface instance"""
         self.__voiceInterface = VoiceInterface()
         
     
-    def wishUser(self):
+    def wish_user(self):
         """Wishes user based on the hour of the day"""
         hour = int (datetime.now().hour)
         if 0 <= hour < 12:
@@ -25,7 +23,7 @@ class Assistant:
             self.__voiceInterface.speak("Good Evening!")
             
     
-    def listenQuery(self) -> str:
+    def listen_for_query(self) -> str:
         """Listens for microphone input and return string of the input
 
         Returns:
@@ -41,7 +39,7 @@ class Assistant:
         return query
     
     
-    def executeQuery(self, query: str) -> None:
+    def execute_query(self, query: str) -> None:
         """Processes the query string and runs the corresponding tasks
 
         Args:
@@ -51,21 +49,21 @@ class Assistant:
         #     return
         
         if 'what can you do' in query:
-            Support.explainFeatures(self.__voiceInterface)
+            Support.explain_features(self.__voiceInterface)
         
-        elif re.match(r'[what|all|list].*apps.*open', query):
-            Support.possibleAppsAndWebs(self.__voiceInterface)
+        elif re.match(r'(what|all|list).*apps.*open', query):
+            Support.possible_apps_and_webs(self.__voiceInterface)
         
-        elif re.search(r'search .* (in google){0,1}', query):
-            query.replace(" in google", "") # to convert to a generalized format
-            searchQuery = re.findall(r'search (.*)', query)[0]
-            Support.runSearchQuery(self.__voiceInterface, searchQuery)
+        elif re.search(r'search .* (in google)?', query):
+            query = query.replace(" in google", "") # to convert to a generalized format
+            search_query = re.findall(r'search (.*)', query)[0]
+            Support.run_search_query(self.__voiceInterface, search_query)
             
         elif 'wikipedia' in query:
             # replace only once to prevent changing the query
             query = query.replace("wikipedia", "", 1)
-            query = query.replace("search", "", 1)
-            Support.wikipediaSearch(self.__voiceInterface, searchQuery, 3)
+            search_query = query.replace("search", "", 1)
+            Support.wikipedia_search(self.__voiceInterface, search_query, 3)
             
         elif re.search('open .*', query):
             application = re.findall(r"open (.*)", query)
@@ -74,15 +72,15 @@ class Assistant:
                 return
             application = application[0]
             try:
-                Support.openApplicationWebsite(self.__voiceInterface, application)
+                Support.open_application_website(self.__voiceInterface, application)
             except ValueError:
-                self.__voiceInterface.speak(f"Accesspoint Matching {application} not found !")
+                self.__voiceInterface.speak(f"Access point Matching {application} not found !")
         
         elif any(text in query for text in ["the time", "time please"]):
-            Support.tellTime(self.__voiceInterface)
+            Support.tell_time(self.__voiceInterface)
             
         else:
-            self.__voiceInterface.speak("could not interprete the query")
+            self.__voiceInterface.speak("could not interpret the query")
     
     
     def close(self):
@@ -101,11 +99,11 @@ class Assistant:
 
 def __main__():
     assistant = Assistant()
-    assistant.wishUser()
-    Support.clrscr()
+    assistant.wish_user()
+    Support.clear_screen()
     while True:
-        query = assistant.listenQuery()
-        assistant.executeQuery(query)
+        query = assistant.listen_for_query()
+        assistant.execute_query(query)
 
 
 if __name__ == "__main__":

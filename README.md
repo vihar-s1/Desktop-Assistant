@@ -12,13 +12,13 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
 
 ## Table of Contents
 
-- [🖥️ Desktop Assistant](#️-desktop-assistant)
+- [🖥️ Desktop Assistant](#-desktop-assistant)
   - [Table of Contents](#table-of-contents)
   - [🚀 Introduction](#-introduction)
   - [✨ Features](#-features)
   - [🚀 Getting Started](#-getting-started)
     - [📋 Prerequisites](#-prerequisites)
-    - [🛠️ Installation](#️-installation)
+    - [🛠️ Installation](#-installation)
   - [🤝 Contributing](#-contributing)
   - [🐞 Bug Reports and Feature Requests](#-bug-reports-and-feature-requests)
   - [💬 Discussion Groups](#-discussion-groups)
@@ -56,19 +56,56 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
     git clone https://github.com/vihar-s1/Desktop-Assistant
     ```
 
-2. In the project root directory run following commands to create a virtual environment, activate it, and install the python module dependencies.
+2. In the project root directory run following script to create a virtual environment, and setup the project.
 
     ```bash
-    python -m venv .venv
-    source .venv/Scripts/activate
-    pip install -r requirements.txt
+    bash setupProject.sh
     ```
 
-3. Once installed, simply run the `Assistant.py` file to start using the Assistant.
+3. Once setup is complete, simply run the `Assistant.py` file to start using the Assistant.
 
     ```bash
     python Assistant.py
     ```
+
+### 🛠️ macOS Specific Fixes
+
+If you encounter the following error on MacOS:
+
+#### @objc.python_method annotation error
+
+> File ".../.venv/lib/python3.12/site-packages/pyttsx3/drivers/nsss.py", line 27, in NSSpeechDriver  
+>    @objc.python_method  
+>    ^^^^  
+> NameError: name 'objc' is not defined. Did you mean: 'object'?  
+
+Then open the `nsss.py` library file and import `objc` at the top of the file.
+
+```python
+import objc
+```
+
+You may need to install `PyObjC` using the following command:
+
+```bash
+pip3 install pyobjc
+```
+
+#### NSSpeechDriver super() error
+
+If you encounter the following error:
+
+>   File "/Users/viharshah/Desktop/IdeaProjects/Desktop-Assistant/.venv/lib/python3.12/site-packages/pyttsx3/drivers/nsss.py", line 30, in initWithProxy  
+> self = super(NSSpeechDriver, self).init()  
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
+> AttributeError: 'super' object has no attribute 'init'  
+> sys:1: UninitializedDeallocWarning: leaking an uninitialized object of type NSSpeechDriver
+
+Then replace the `super(NSSpeechDriver, self).init()` line with the following:
+
+```python3
+objc.super(NSSpeechDriver, self).init()
+```
 
 ## 🤝 Contributing
 
@@ -82,19 +119,15 @@ source .venv/Scripts/activate
 pip install -r requirements.txt
 ```
   
-- Make Sure to update the `requirements.txt` file by running `updateRequirementsFile.sh` in case any additional packages are installed.
-
-```bash
-bash updateRequirementsFile.sh
-```
+- Make Sure to update the `requirements.txt` file by adding to it appropriate required packages and corresponding versions.
 
 ## 🐞 Bug Reports and Feature Requests
 
 - If you encountered an issue or want to report a bug, following is the [Bug Report Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) you will be asked to follow.
-- Any new feature requests will also appreciated if it follows the predefined [Feature Request Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
+- Any new feature requests will also be appreciated if it follows the predefined [Feature Request Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
 
 > **NOTE:** The templates are predefined and integrated in the repository so you can easily go to the [Issues Tab](https://github.com/vihar-s1/Desktop-Assistant/issues) and start writing your bug report, or feature request without any problem.
 
 ## 💬 Discussion Groups
 
-To discuss about the project in depth with the contributors of the project about new features, bug requests, or just suggestions, join the [Matrix Space](https://matrix.to/#/#desktop-assistant-github-project:matrix.org) or go to the [Discussion Page](https://github.com/vihar-s1/Desktop-Assistant/discussions) of the repository.
+To discuss the project in depth with the contributors of the project about new features, bug requests, or just suggestions, join the [Matrix Space](https://matrix.to/#/#desktop-assistant-github-project:matrix.org) or go to the [Discussion Page](https://github.com/vihar-s1/Desktop-Assistant/discussions) of the repository.
