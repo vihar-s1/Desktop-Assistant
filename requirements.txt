@@ -12,7 +12,7 @@ click==8.1.7
 colorama==0.4.6
 comtypes==1.2.0
 googlesearch-python==1.2.3
-idna==3.4
+idna==3.7
 packaging==23.1
 pip-tools==7.3.0
 pipdeptree==2.13.0
