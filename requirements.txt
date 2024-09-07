@@ -6,7 +6,7 @@
 #
 beautifulsoup4==4.12.2
 build==1.0.3
-certifi==2023.7.22
+certifi==2024.7.4
 charset-normalizer==3.2.0
 click==8.1.7
 colorama==0.4.6
