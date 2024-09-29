@@ -34,7 +34,11 @@ $RECYCLE.BIN/
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.
+
 # visual studio code
 .vscode
 .history
 .vsix
+
+# IntelliJ Idea
+.idea
