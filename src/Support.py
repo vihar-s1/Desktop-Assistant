@@ -1,12 +1,19 @@
 import os
 from datetime import datetime
+import threading
+import time
+import pyautogui as pag
+import pygetwindow as gw
+from PIL import ImageGrab
 
 import googlesearch
 import wikipedia
 
 from ExternalPaths import AppPath, WebPath, features
 from VoiceInterface import VoiceInterface
-
+#include the actual code to gradual score
+scroll_thread = None
+stop_scroll_event = threading.Event()
 
 def clear_screen():
     if os.name == "posix":
@@ -121,3 +128,109 @@ def tell_time(vi: VoiceInterface) -> None:
     tmz = date_time.tzname()
     
     vi.speak(f"Current time is {hour}:{minute}:{second} {tmz}")
+
+def setup_scrolling():
+      if not hasattr(setup_scrolling, "scroll_thread"):
+        setup_scrolling.scroll_thread = None
+      if not hasattr(setup_scrolling, "stop_scroll_event"):
+        setup_scrolling.stop_scroll_event = threading.Event()
+
+      return setup_scrolling.scroll_thread, setup_scrolling.stop_scroll_event
+
+def start_gradual_scroll(direction: str, stop_event: threading.Event) -> None:
+    """Gradually scroll in the given direction until stop_event is set."""
+    time.sleep(2)
+    active_window = pag.getActiveWindow()
+    if active_window:
+    
+        left, top, width, height = active_window.left, active_window.top, active_window.width, active_window.height
+        
+
+        previous_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))  # Capture the entire window
+
+        
+        while True:
+            if stop_event.is_set():
+               
+                break
+            pag.press(direction)  
+            time.sleep(1)  
+
+            current_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))
+
+            if list(current_image.getdata()) == list(previous_image.getdata()):
+                print("Reached to extreme")
+                stop_event.set() 
+                setup_scrolling.scroll_thread = None
+                break
+
+            previous_image = current_image 
+        
+
+
+
+
+        print(f"Scrolling {direction}...")  # Simulate scrolling action
+          # Simulate delay between scroll actions
+    print(f"Stopped scrolling {direction}.")
+
+def start_scrolling(direction: str) -> None:
+    """Start a new scroll thread."""
+    
+    setup_scrolling.stop_scroll_event.clear()
+    setup_scrolling.scroll_thread = threading.Thread(target=start_gradual_scroll, args=(direction, setup_scrolling.stop_scroll_event))
+    setup_scrolling.scroll_thread.start()
+
+def stop_scrolling() -> None:
+    """Stop the current scrolling thread."""
+   
+    setup_scrolling.stop_scroll_event.set()
+    if setup_scrolling.scroll_thread is not None:
+        setup_scrolling.scroll_thread.join()
+        setup_scrolling.scroll_thread = None
+    print("Scrolling has stopped.")
+
+
+def scroll_to(direction:str)->None:
+    active_window = gw.getActiveWindow()
+    if active_window:
+        # Bring the active window to the front
+        active_window.activate()
+        time.sleep(0.5)
+        if direction=='top':
+            pag.press('home') 
+       
+        elif direction=='bottom':
+            pag.press('end') 
+       
+        elif direction=='right':
+            pag.press('right', presses=9999) 
+        
+        elif direction=='left':
+            pag.press('left', presses=9999) 
+        
+        else:
+            print("Invalid Command")
+        
+        
+#pygetwindow and implement
+def simple_scroll(direction:str)->None:
+    active_window = gw.getActiveWindow()
+    if active_window:
+        # Bring the active window to the front
+        active_window.activate()
+        time.sleep(0.5)
+        if direction=='up':
+            pag.press('up', presses=100) 
+        elif direction=='down':
+            pag.press('down', presses=100) 
+        elif direction=='right':
+            pag.press('right', presses=500) 
+        
+        elif direction=='left':
+            pag.press('left', presses=500) 
+        
+        else:
+            print("Invalid direction")
+    
+
