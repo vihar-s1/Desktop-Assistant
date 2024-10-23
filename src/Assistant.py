@@ -6,15 +6,12 @@ from VoiceInterface import VoiceInterface
 
 LISTENING_ERROR = "Say that again please..."
 
-
-
 class Assistant:
     def __init__(self):
         """Creates an Assistant instance consisting of an VoiceInterface instance"""
         self.__voiceInterface = VoiceInterface()
         
         
-    
     def wish_user(self):
         """Wishes user based on the hour of the day"""
         hour = int (datetime.now().hour)
@@ -41,16 +38,12 @@ class Assistant:
             self.__voiceInterface.speak(LISTENING_ERROR)
         return query
     
-    
-    def execute_query(self, query: str) -> None:
-        
-        """Processes the query string and runs the corresponding tasks
 
+    def execute_query(self, query: str) -> None:
+        """Processes the query string and runs the corresponding tasks
         Args:
             query (str): the query string obtained from speech input
         """
-        # if any( text in query for text in ['exit', 'quit', 'close'] ):
-        #     return
         if query is None:
             print("No query detected. Please provide an input.")
         elif 'what can you do' in query:
@@ -94,11 +87,7 @@ class Assistant:
             elif 'stop scrolling' in query:
                 scroll_thread,stop_scroll_event=Support.setup_scrolling()
                 if scroll_thread is not None:
-                    Support.stop_scrolling()
-            
-               
-
-                
+                    Support.stop_scrolling()  
             elif re.search(r'scroll to (up|down|left|right|top|bottom)', query):
                 match = re.search(r'scroll to (up|down|left|right|top|bottom)', query)
                 direction = match.group(1)
@@ -107,11 +96,8 @@ class Assistant:
                 match = re.search(r'scroll (up|down|left|right)', query)
                 direction = match.group(1)
                 Support.simple_scroll(direction)
-                
-        
             else:
-                print("Scroll command not recognized")
-            
+                print("Scroll command not recognized")     
         else:
             self.__voiceInterface.speak("could not interpret the query")
     
