@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-
+import threading
 import Support
 from VoiceInterface import VoiceInterface
 
@@ -11,7 +11,7 @@ class Assistant:
         """Creates an Assistant instance consisting of an VoiceInterface instance"""
         self.__voiceInterface = VoiceInterface()
         
-    
+        
     def wish_user(self):
         """Wishes user based on the hour of the day"""
         hour = int (datetime.now().hour)
@@ -38,17 +38,15 @@ class Assistant:
             self.__voiceInterface.speak(LISTENING_ERROR)
         return query
     
-    
+
     def execute_query(self, query: str) -> None:
         """Processes the query string and runs the corresponding tasks
-
         Args:
             query (str): the query string obtained from speech input
         """
-        # if any( text in query for text in ['exit', 'quit', 'close'] ):
-        #     return
-        
-        if 'what can you do' in query:
+        if query is None:
+            print("No query detected. Please provide an input.")
+        elif 'what can you do' in query:
             Support.explain_features(self.__voiceInterface)
         
         elif re.match(r'(what|all|list).*apps.*open', query):
@@ -78,7 +76,28 @@ class Assistant:
         
         elif any(text in query for text in ["the time", "time please"]):
             Support.tell_time(self.__voiceInterface)
-            
+        
+        elif 'scroll' in query:
+            if re.search(r'start scrolling (up|down|left|right|top|bottom)', query):
+                direction = re.findall(r'start scrolling (up|down|left|right|top|bottom)', query)[0]
+                scroll_thread,stop_scroll_event=Support.setup_scrolling()
+                if scroll_thread is None:  # Only start if not already scrolling
+                    Support.start_scrolling(direction)
+
+            elif 'stop scrolling' in query:
+                scroll_thread,stop_scroll_event=Support.setup_scrolling()
+                if scroll_thread is not None:
+                    Support.stop_scrolling()  
+            elif re.search(r'scroll to (up|down|left|right|top|bottom)', query):
+                match = re.search(r'scroll to (up|down|left|right|top|bottom)', query)
+                direction = match.group(1)
+                Support.scroll_to(direction)
+            elif re.search(r'scroll (up|down|left|right)', query):
+                match = re.search(r'scroll (up|down|left|right)', query)
+                direction = match.group(1)
+                Support.simple_scroll(direction)
+            else:
+                print("Scroll command not recognized")     
         else:
             self.__voiceInterface.speak("could not interpret the query")
     

@@ -57,7 +57,7 @@ class VoiceInterface:
         try:
             # language = English(en)-India(in)
             if print_statement: print("Recognizing...\n")
-            query = self.__recognizer.recoginize_google(audio_data=audio, language="en-in")
+            query = self.__recognizer.recognize_google(audio_data=audio, language="en-in")
             return query
         except:
             return None
