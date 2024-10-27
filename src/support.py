@@ -82,7 +82,7 @@ def run_search_query(vi: VoiceInterface, search_query: str) -> None:
 
 
 def wikipedia_search(
-        vi: VoiceInterface, search_query: str, sentence_count: int = 3
+    vi: VoiceInterface, search_query: str, sentence_count: int = 3
 ) -> None:
     """Searches wikipedia for the given query and returns fixed number of statements in response.
     Disambiguation Error due to multiple similar results is handled.

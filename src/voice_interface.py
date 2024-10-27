@@ -80,11 +80,11 @@ class VoiceInterface:
             return None
 
     def set_properties(
-            self,
-            energy_threshold: int | None = None,
-            pause_threshold: float | None = None,
-            phrase_threshold: float | None = None,
-            non_speaking_duration: float | None = None,
+        self,
+        energy_threshold: int | None = None,
+        pause_threshold: float | None = None,
+        phrase_threshold: float | None = None,
+        non_speaking_duration: float | None = None,
     ) -> None:
         """Set properties of the (voice) recognizer instance
 
