@@ -27,9 +27,11 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
 
 - A Python-based desktop assistant configured to automate some of the day-to-day tasks and help save time.
 - Voice assistance is used to provide a hands-free interface to the user as the assistant can run in the background while performing day-to-day tasks.
-- `Extras.py` and `Support.py` files are for having additional globally required variables, and query functions handling individual queries respectively.
-- The `VoiceInterface.py` file contains the **_VoiceInterface_** class which handles the abstraction of user voice recognition and assistant speech.
-- The `Assistant.py` file contains the main code integrating everything together to run the assistant properly.
+- `external_paths.py` and `support.py` files are for having additional globally required variables, and query functions
+  handling individual queries respectively.
+- The `voice_interface.py` file contains the **_VoiceInterface_** class which handles the abstraction of user voice
+  recognition and assistant speech.
+- The `assistant.py` file contains the main code integrating everything together to run the assistant properly.
 
 ## ✨ Features
 
@@ -41,7 +43,7 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
 
 - Fork or download the project.
 - Install the Python dependencies mentioned in the `requirements.txt` file using pip or pip3.
-- Run the main Python file named `Assistant.py` in the project root folder to run the assistant.
+- Run the main Python file named `assistant.py` in the project root folder to run the assistant.
 
 ### 📋 Prerequisites
 
@@ -62,10 +64,10 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
     bash setupProject.sh
     ```
 
-3. Once setup is complete, simply run the `Assistant.py` file to start using the Assistant.
+3. Once setup is complete, simply run the `assistant.py` file to start using the Assistant.
 
     ```bash
-    python Assistant.py
+    python assistant.py
     ```
 
 ### 🛠️ macOS Specific Fixes
@@ -109,9 +111,8 @@ objc.super(NSSpeechDriver, self).init()
 
 ## 🤝 Contributing
 
-- If you want to contribute, follow the contribution guidelines here: [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md)
-  
-- Create a virtual environment for contributing to prevent unnecessary packages from being included in the `requirements.txt` file while updating it via `updateRequirementsFile.sh`
+- If you want to contribute, follow the contribution guidelines
+  here: [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md).
 
 ```bash
 python -m venv .venv
@@ -123,11 +124,16 @@ pip install -r requirements.txt
 
 ## 🐞 Bug Reports and Feature Requests
 
-- If you encountered an issue or want to report a bug, following is the [Bug Report Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) you will be asked to follow.
+- If you encounter an issue or want to report a bug, following is
+  the [Bug Report Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/bug_report.md)
+  you will be asked to follow.
 - Any new feature requests will also be appreciated if it follows the predefined [Feature Request Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
 
-> **NOTE:** The templates are predefined and integrated in the repository so you can easily go to the [Issues Tab](https://github.com/vihar-s1/Desktop-Assistant/issues) and start writing your bug report, or feature request without any problem.
+> **NOTE:** The templates are predefined and integrated in the repository so you can go to
+> the [Issues Tab](https://github.com/vihar-s1/Desktop-Assistant/issues) and start writing your bug report, or feature
+> request without any problem.
 
 ## 💬 Discussion Groups
 
-To discuss the project in depth with the contributors of the project about new features, bug requests, or just suggestions, join the [Matrix Space](https://matrix.to/#/#desktop-assistant-github-project:matrix.org) or go to the [Discussion Page](https://github.com/vihar-s1/Desktop-Assistant/discussions) of the repository.
+To discuss the project in depth with the contributors of the project about new features, bug requests, or just
+suggestions, go to the [Discussion Page](https://github.com/vihar-s1/Desktop-Assistant/discussions) of the repository.

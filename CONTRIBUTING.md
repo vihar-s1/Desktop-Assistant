@@ -29,7 +29,8 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
 
 5. **Create a Pull Request (PR):** Open a PR to the main project repository. Describe your changes briefly and why they're awesome. MAKE SURE TO USE THE PREDEFINED PULL REQUEST TEMPLATE.
 
-6. Note that the PR will have to successfully pass workflows of `CodeQL`, and `Dependency-Review`. A successfully checked PR will be then reviewed and then merged. Any changes suggested must be met before PR can be merged.
+6. Note that the PR will have to successfully pass all the workflows setup via GitHub action. A successfully checked PR
+   will be then reviewed and then merged. Any changes suggested must be met before PR can be merged.
 
 ## Guidelines
 
