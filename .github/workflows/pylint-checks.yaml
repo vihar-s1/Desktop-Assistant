@@ -26,7 +26,15 @@ jobs:
       - name: Run Pylint
         run: |
           # Get the list of changed files
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$')
+          changes=$(git diff --name-only main...HEAD | grep '\.py$')
+          
+          # Make sure to include only the files that exist
+          changed_files=""
+          for file in $changes; do
+              if [ -f "$file" ]; then
+              changed_files="$changed_files $file"
+              fi
+          done
           
           # Check if there are any changed Python files
           if [ -z "$changed_files" ]; then
