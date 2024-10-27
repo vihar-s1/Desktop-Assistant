@@ -1,0 +1,46 @@
+name: Pylint Check
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  pylint-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.0'
+
+      - name: Install dependencies
+        run: |
+          pip install pylint
+
+      - name: Run Pylint
+        run: |
+          # Get the list of changed files
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.py$')
+          
+          # Check if there are any changed Python files
+          if [ -z "$changed_files" ]; then
+            echo "No Python files changed."
+            exit 0
+          fi
+
+          # Run pylint on the changed files and capture the score
+          pylint_score=$(pylint $changed_files | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
+
+          # Check if the score is below 9
+          if (( $(echo "$pylint_score < 9" | bc -l) )); then
+            echo "Pylint score is below 9: $pylint_score"
+            exit 1
+          else
+            echo "Pylint score is acceptable: $pylint_score"
+          fi
