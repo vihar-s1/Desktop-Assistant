@@ -50,6 +50,11 @@ pip install --upgrade pip
 echo "Installing required packages from requirements.txt..."
 pip3 install -r requirements.txt
 
+# Installing pre-commit hooks
+echo "Installing pre-commit hooks..."
+pip3 install pre-commit
+pre-commit install
+
 # Deactivate the virtual environment
 echo "Deactivating virtual environment..."
 deactivate
