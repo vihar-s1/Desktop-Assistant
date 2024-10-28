@@ -41,6 +41,9 @@ jobs:
           # Activate the virtual environment
           source .venv/bin/activate
           echo "Active Virtual Environment: ${VIRTUAL_ENV}"
+          
+          # get the list of installed python modules
+          pip freeze
                
           # Get the list of changed files
           changes=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} | grep '\.py$')
