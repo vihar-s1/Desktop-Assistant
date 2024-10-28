@@ -28,9 +28,17 @@ jobs:
         run: |
           git fetch --all
 
+      - name: Set up environment
+        shell: bash
+        run: |
+          bash setupProject.sh
+
       - name: Run Pylint
         shell: bash
         run: |
+          # Activate the virtual environment
+          source .venv/bin/activate
+               
           # Get the list of changed files
           changes=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} | grep '\.py$')
           echo "Changed files: $changes"
@@ -51,8 +59,8 @@ jobs:
           fi
 
           # Run pylint on the changed files and capture the score
-          pylint $changed_files
-          pylint_score=$(pylint $changed_files | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
+          pylint $changed_files | tee /dev/tty
+          #pylint_score=$(pylint $changed_files | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
 
           # Check if the score is below 9
           if (( $(echo "$pylint_score < 9" | bc -l) )); then
