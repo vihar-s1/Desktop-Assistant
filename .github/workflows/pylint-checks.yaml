@@ -26,7 +26,7 @@ jobs:
       - name: Run Pylint
         run: |
           # Get the list of changed files
-          changes=$(git diff --name-only main...HEAD | grep '\.py$')
+          changes=$(git diff --name-only main..HEAD | grep '\.py$')
           
           # Make sure to include only the files that exist
           changed_files=""
