@@ -61,8 +61,11 @@ jobs:
           fi
 
           # Run pylint on the changed files and capture the score
+          { # try
           pylint_score=$(pylint $changed_files | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
-
+          } || { # catch
+            echo "Pylint failed to run with exit code: $?"
+          }
           # Check if the score is below 9
           if (( $(echo "$pylint_score < 9" | bc -l) )); then
             echo "Pylint score is below 9: $pylint_score"
