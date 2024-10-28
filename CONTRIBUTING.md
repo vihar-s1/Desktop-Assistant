@@ -6,13 +6,27 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
 
 1. **Fork the Project:** Click the "Fork" button at the top-right to create your copy of the project.
 
-2. **Make Changes:** Work on what interests you - add new features, fix bugs, or improve documentation on a **_separate branch_**. It's your playground!
+2. **Clone Your Fork:** Copy the URL from the address bar and run the following command in your terminal.
+
+    ```bash
+    git clone <your-fork-url>
+    cd Desktop-Assistant
+    ```
+3. **Set Up the Project:** Run the following script to create a virtual environment, install the necessary libraries and pre-commit hooks, and set up the project. 
+
+    ```bash
+    bash setupProject.sh
+    ```
+
+4. **Create a New Branch:** Create a new branch to work on your changes.
 
     ```bash
     git checkout -b <new-branch-name>
-    ```
+    ``
 
-3. **Commit Changes:** Use clear and simple commit messages. For example:
+5. **Make Changes:** Work on what interests you - add new features, fix bugs, or improve documentation on a **_separate branch_**. It's your playground!
+
+6. **Commit Changes:** Use clear and simple commit messages. For example:
 
     - "Added a weather command"
     - "Fixed voice recognition bug"
@@ -21,15 +35,16 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
         git commit -m "<mandatory commit message here>" -m "<optional commit description here>"
         ```
 
-4. **Push to Your Fork:** Send your changes back to your forked repository.
+7. **Push to Your Fork:** Send your changes back to your forked repository.
 
     ```bash
     git push origin <branch-name>
     ```
 
-5. **Create a Pull Request (PR):** Open a PR to the main project repository. Describe your changes briefly and why they're awesome. MAKE SURE TO USE THE PREDEFINED PULL REQUEST TEMPLATE.
+8. **Create a Pull Request (PR):** Open a PR to the `main` branch of `vihar-s1/Desktop-Assistant`. Describe your changes briefly and why they're awesome. MAKE SURE TO USE THE PREDEFINED PULL REQUEST TEMPLATE.
 
-6. Note that the PR will have to successfully pass workflows of `CodeQL`, and `Dependency-Review`. A successfully checked PR will be then reviewed and then merged. Any changes suggested must be met before PR can be merged.
+9. Note that the PR will have to successfully pass all the workflows setup via GitHub action. A successfully checked PR
+   will be then reviewed and then merged. Any changes suggested must be met before PR can be merged.
 
 ## Guidelines
 

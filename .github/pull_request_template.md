@@ -19,17 +19,17 @@ closes <issue_id_here> <!-- Must refer a corresponding issue being worked on. Yo
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] This change requires a documentation update
--->
+
 
 ## Additional Setup Requirements
 <!-- Additional steps or changes to existing project setup procedure. Write "_No Response_" if nothing to write. -->
 
-## Neccessary Conditions
+## Necessary Conditions
 <!-- Select those that apply from following. [x] - Marked, [ ] - Not Marked  -->
-- [ ] I have commented my code, particularly in hard-to-understand areas.
+- [ ] I have commented on my code, particularly in hard-to-understand areas.
 - [ ] My changes generate no new warnings.
 - [ ] The changes do not involve any Private data leak/reveal.
-- [ ] Secrets, if any, are kept hidden via environment file, whose structure has been explained via documentation.
+- [ ] Secrets, if any, are kept hidden via an environment file, whose structure has been explained via documentation.
 
 Please make sure to check the following milestones before submitting the bug report!
 

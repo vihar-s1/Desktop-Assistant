@@ -4,8 +4,8 @@
 
 echo "Starting project setup..."
 
-# Check if the system is macOS and install portaudio using brew
-if [[ "$OSTYPE" == "darwin"* ]]; then
+# Check if the system is macOS or Linux and install portaudio using brew
+if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == "linux-gnu"* ]]; then
     echo "MacOS detected, installing portaudio using brew..."
     brew install portaudio
 fi
@@ -49,6 +49,11 @@ pip install --upgrade pip
 # Install the required packages
 echo "Installing required packages from requirements.txt..."
 pip3 install -r requirements.txt
+
+# Installing pre-commit hooks
+echo "Installing pre-commit hooks..."
+pip3 install pre-commit
+pre-commit install
 
 # Deactivate the virtual environment
 echo "Deactivating virtual environment..."

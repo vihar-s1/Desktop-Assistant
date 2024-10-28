@@ -1,32 +1,46 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Support
+===============
+
+This module contains the functions that support the Assistant in performing various tasks.
+
+"""
+
 import os
-from datetime import datetime
 import threading
 import time
-import pyautogui as pag
-import pygetwindow as gw
-from PIL import ImageGrab
+from datetime import datetime
 
 import googlesearch
+import pyautogui as pag
+import pygetwindow as gw
 import wikipedia
+from PIL import ImageGrab
 
-from ExternalPaths import AppPath, WebPath, features
-from VoiceInterface import VoiceInterface
-#include the actual code to gradual score
-scroll_thread = None
-stop_scroll_event = threading.Event()
+from external_paths import AppPath, WebPath, features
+from voice_interface import VoiceInterface
 
-def clear_screen():
+# include the actual code to gradual score
+SCROLL_THREAD = None
+STOP_SCROLL_EVENT = threading.Event()
+
+
+def clear_screen() -> None:
+    """Clears the screen based on the operating system"""
     if os.name == "posix":
         os.system("clear")
     else:
         os.system("cls")
-        
-        
+
+
 def possible_apps_and_webs(vi: VoiceInterface) -> None:
+    """Lists all the possible applications and websites that can be opened"""
     vi.speak("Here is a list of all apps and websites I can open:")
     vi.speak("\n".join(AppPath.keys()))
     vi.speak("\n".join(WebPath.keys()))
-    
+
 
 def explain_features(vi: VoiceInterface) -> None:
     """Explains the features available
@@ -37,7 +51,7 @@ def explain_features(vi: VoiceInterface) -> None:
     vi.speak("Here's what I can do...\n")
     for feature in features:
         vi.speak(f"--> {feature}")
-    
+
 
 def run_search_query(vi: VoiceInterface, search_query: str) -> None:
     """Performs google search based on some terms
@@ -47,50 +61,60 @@ def run_search_query(vi: VoiceInterface, search_query: str) -> None:
         search_query (str): the query term to be searched in google
     """
     if not isinstance(vi, VoiceInterface):
-        raise ValueError(f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}")
+        raise ValueError(
+            f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}"
+        )
     if not search_query:
         vi.speak("Invalid Google Search Query Found!!")
         return
-    
+
     results = googlesearch.search(term=search_query)
-    if not results: vi.speak("No Search Result Found!!")
-    
+    if not results:
+        vi.speak("No Search Result Found!!")
+
     try:
         results = list(results)
         vi.speak("Found Following Results: ")
-        for i in range(len(results)):
-            print(i+1, ")", results[i])
+        for i, result in enumerate(results):
+            print(i + 1, ")", result.title)
     except Exception as error:
         print(error.__str__)
-        
 
-def wikipedia_search(vi: VoiceInterface, search_query: str, sentence_count:int=3) -> None:
+
+def wikipedia_search(
+    vi: VoiceInterface, search_query: str, sentence_count: int = 3
+) -> None:
     """Searches wikipedia for the given query and returns fixed number of statements in response.
-    Disambiguation Error due to multiple similar results is handled. Speaks the options in this case.
+    Disambiguation Error due to multiple similar results is handled.
+    Speaks the options in this case.
 
     Args:
         vi (VoiceInterface): VoiceInterface instance used to speak.
         search_query (str): The query term to search in wikipedia
-        sentence_count (int, optional): The number of sentences to speak in case of direct match. Defaults to 3.
+        sentence_count (int, optional): The number of sentences to speak in case of direct match.
+            Default is 3.
     """
     try:
         vi.speak("Searching Wikipedia...")
         results = wikipedia.summary(search_query, sentences=sentence_count)
-        
+
         vi.speak("According to wikipedia...")
         vi.speak(results)
-    except wikipedia.DisambiguationError as DE:
-        vi.speak(f"\n{DE.__class__.__name__}")
-        options = str(DE).split("\n")
+    except wikipedia.DisambiguationError as de:
+        vi.speak(f"\n{de.__class__.__name__}")
+        options = str(de).split("\n")
         if len(options) < 7:
-            for option in options: vi.speak(option)
+            for option in options:
+                vi.speak(option)
         else:
-            for option in options[0:6]: vi.speak(option)
+            for option in options[0:6]:
+                vi.speak(option)
             vi.speak("... and more")
-        
+
 
 def open_application_website(vi: VoiceInterface, search_query: str) -> None:
-    """Attempts to raise the application or website by finding the access-point in the AppPath/WebPath dictionaries
+    """
+    open the application/website using a matching path from AppPath/WebPath dictionaries.
 
     Args:
         vi (VoiceInterface): VoiceInterface instance used to speak.
@@ -101,15 +125,17 @@ def open_application_website(vi: VoiceInterface, search_query: str) -> None:
     """
     vi.speak(f"Attempting to open {search_query}...")
     if search_query in AppPath.keys():
-        try:  os.startfile(AppPath[search_query.strip()])
+        try:
+            os.startfile(AppPath[search_query.strip()])
         except Exception as error:
             vi.speak(f"Error: {error}: Failed to open {search_query}")
-        
+
     elif search_query in WebPath.keys():
-        try:  os.startfile(WebPath[search_query.strip()])
+        try:
+            os.startfile(WebPath[search_query.strip()])
         except Exception as error:
             vi.speak(f"Error: {error}: Failed to open {search_query}")
-    
+
     else:
         raise ValueError(f"Missing Access-point for {search_query}")
 
@@ -121,104 +147,121 @@ def tell_time(vi: VoiceInterface) -> None:
         vi (VoiceInterface): Voice interface instance used to speak
     """
     if not isinstance(vi, VoiceInterface):
-        raise ValueError(f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}")
-    
+        raise ValueError(
+            f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}"
+        )
+
     date_time = datetime.now()
     hour, minute, second = date_time.hour, date_time.minute, date_time.second
     tmz = date_time.tzname()
-    
+
     vi.speak(f"Current time is {hour}:{minute}:{second} {tmz}")
 
-def setup_scrolling():
-      if not hasattr(setup_scrolling, "scroll_thread"):
-        setup_scrolling.scroll_thread = None
-      if not hasattr(setup_scrolling, "stop_scroll_event"):
-        setup_scrolling.stop_scroll_event = threading.Event()
 
-      return setup_scrolling.scroll_thread, setup_scrolling.stop_scroll_event
+def setup_scrolling() -> tuple[threading.Thread | None, threading.Event]:
+    """Set up the scrolling thread and "stop scroll" event if not already setup."""
+    if not hasattr(setup_scrolling, "SCROLL_THREAD"):
+        setup_scrolling.SCROLL_THREAD = None
+    if not hasattr(setup_scrolling, "STOP_SCROLL_EVENT"):
+        setup_scrolling.STOP_SCROLL_EVENT = threading.Event()
+
+    return setup_scrolling.SCROLL_THREAD, setup_scrolling.STOP_SCROLL_EVENT
+
 
 def start_gradual_scroll(direction: str, stop_event: threading.Event) -> None:
     """Gradually scroll in the given direction until stop_event is set."""
     time.sleep(2)
     active_window = pag.getActiveWindow()
     if active_window:
-    
-        left, top, width, height = active_window.left, active_window.top, active_window.width, active_window.height
-        
-        previous_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))  # Capture the entire window
+
+        left, top, width, height = (
+            active_window.left,
+            active_window.top,
+            active_window.width,
+            active_window.height,
+        )
+
+        previous_image = ImageGrab.grab(
+            # Capture the entire window
+            bbox=(left, top, left + width, top + height)
+        )
 
         while True:
             if stop_event.is_set():
                 break
-            pag.press(direction)  
-            time.sleep(1)  
+            pag.press(direction)
+            time.sleep(1)
             current_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))
 
             if list(current_image.getdata()) == list(previous_image.getdata()):
                 print("Reached to extreme")
-                stop_event.set() 
-                setup_scrolling.scroll_thread = None
+                stop_event.set()
+                setup_scrolling.SCROLL_THREAD = None
                 break
-            previous_image = current_image 
-        
+            previous_image = current_image
+
         print(f"Scrolling {direction}...")  # Simulate scrolling action
-          # Simulate delay between scroll actions
+        # Simulate delay between scroll actions
     print(f"Stopped scrolling {direction}.")
+
 
 def start_scrolling(direction: str) -> None:
     """Start a new scroll thread."""
-    setup_scrolling.stop_scroll_event.clear()
-    setup_scrolling.scroll_thread = threading.Thread(target=start_gradual_scroll, args=(direction, setup_scrolling.stop_scroll_event))
-    setup_scrolling.scroll_thread.start()
+    setup_scrolling.STOP_SCROLL_EVENT.clear()
+    setup_scrolling.SCROLL_THREAD = threading.Thread(
+        target=start_gradual_scroll, args=(direction, setup_scrolling.STOP_SCROLL_EVENT)
+    )
+    setup_scrolling.SCROLL_THREAD.start()
+
 
 def stop_scrolling() -> None:
     """Stop the current scrolling thread."""
-    setup_scrolling.stop_scroll_event.set()
-    if setup_scrolling.scroll_thread is not None:
-        setup_scrolling.scroll_thread.join()
-        setup_scrolling.scroll_thread = None
+    setup_scrolling.STOP_SCROLL_EVENT.set()
+    if setup_scrolling.SCROLL_THREAD is not None:
+        setup_scrolling.SCROLL_THREAD.join()
+        setup_scrolling.SCROLL_THREAD = None
     print("Scrolling has stopped.")
 
 
-def scroll_to(direction:str)->None:
+def scroll_to(direction: str) -> None:
+    """Scroll to the extreme in the given direction."""
     active_window = gw.getActiveWindow()
     if active_window:
         # Bring the active window to the front
         active_window.activate()
         time.sleep(0.5)
-        if direction=='top':
-            pag.press('home') 
-       
-        elif direction=='bottom':
-            pag.press('end') 
-       
-        elif direction=='right':
-            pag.press('right', presses=9999) 
-        
-        elif direction=='left':
-            pag.press('left', presses=9999) 
-        
+        if direction == "top":
+            pag.press("home")
+
+        elif direction == "bottom":
+            pag.press("end")
+
+        elif direction == "right":
+            pag.press("right", presses=9999)
+
+        elif direction == "left":
+            pag.press("left", presses=9999)
+
         else:
             print("Invalid Command")
-        
-        
-#pygetwindow and implement
-def simple_scroll(direction:str)->None:
+
+
+# pygetwindow and implement
+def simple_scroll(direction: str) -> None:
+    """Simple scroll in the given direction by a fixed number of steps."""
     active_window = gw.getActiveWindow()
     if active_window:
         # Bring the active window to the front
-        active_window.activate()
+        # active_window.activate()
         time.sleep(0.5)
-        if direction=='up':
-            pag.press('up', presses=100) 
-        elif direction=='down':
-            pag.press('down', presses=100) 
-        elif direction=='right':
-            pag.press('right', presses=500) 
-        elif direction=='left':
-            pag.press('left', presses=500) 
-        
+        if direction == "up":
+            pag.press("up", presses=25)
+        elif direction == "down":
+            pag.press("down", presses=25)
+        elif direction == "right":
+            pag.press("right", presses=25)
+        elif direction == "left":
+            pag.press("left", presses=25)
+
         else:
             print("Invalid direction")
-    
-
