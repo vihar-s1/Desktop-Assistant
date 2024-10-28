@@ -28,6 +28,8 @@ jobs:
       - name: Run Pylint
         run: |
           # Get the list of changed files
+          git fetch origin ${{ github.base_ref }}
+          git fetch origin ${{ github.head_ref }}
           changes=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep '\.py$')
           echo "Changed files: $changes"
           
