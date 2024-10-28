@@ -51,7 +51,7 @@ jobs:
           fi
 
           # Run pylint on the changed files and capture the score
-          pylint_score=$(pylint $changed_files | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
+          pylint_score=$(pylint $changed_files | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
 
           # Check if the score is below 9
           if (( $(echo "$pylint_score < 9" | bc -l) )); then
