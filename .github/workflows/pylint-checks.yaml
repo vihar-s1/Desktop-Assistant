@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -25,12 +23,16 @@ jobs:
         run: |
           pip install pylint
 
+      - name: Fetch history
+        shell: bash
+        run: |
+          git fetch --all
+
       - name: Run Pylint
+        shell: bash
         run: |
           # Get the list of changed files
-          git fetch origin ${{ github.base_ref }}
-          git fetch origin ${{ github.head_ref }}
-          changes=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep '\.py$')
+          changes=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} | grep '\.py$')
           echo "Changed files: $changes"
           
           # Make sure to include only the files that exist
