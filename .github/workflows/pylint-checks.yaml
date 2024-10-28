@@ -23,10 +23,17 @@ jobs:
         run: |
           pip install pylint
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Run Pylint
         run: |
           # Get the list of changed files
-          changes=$(git diff --name-only main..HEAD | grep '\.py$')
+          echo -e "github.ref_name: ${{ github.ref_name }}"
+          echo -e "github.event.repository.default_branch: ${{ github.event.repository.default_branch }}"
+          changes=$(git diff --name-only ${{ github.ref_name }} ${{ github.event.repository.default_branch }} | grep '\.py$')
           
           # Make sure to include only the files that exist
           changed_files=""
