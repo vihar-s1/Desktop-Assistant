@@ -36,12 +36,14 @@ jobs:
       - name: Run Pylint
         shell: bash
         run: |
+          # Get the list of changed files and calculate the total pylint score for them
+          
           # Activate the virtual environment
           source .venv/bin/activate
+          echo "Active Virtual Environment: ${VIRTUAL_ENV}"
                
           # Get the list of changed files
           changes=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }} | grep '\.py$')
-          echo "Changed files: $changes"
           
           # Make sure to include only the files that exist
           changed_files=""
@@ -59,9 +61,7 @@ jobs:
           fi
 
           # Run pylint on the changed files and capture the score
-          pylint_score=$(pylint $changed_files | grep 'Your code has been rated at')
-            echo "pylint_score: $pylint_score"
-          #pylint_score=$(pylint $changed_files | tee /dev/tty | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
+          pylint_score=$(pylint $changed_files | grep 'Your code has been rated at' | awk '{print $7}' | cut -d '/' -f 1)
 
           # Check if the score is below 9
           if (( $(echo "$pylint_score < 9" | bc -l) )); then
