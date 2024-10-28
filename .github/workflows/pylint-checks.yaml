@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,22 +25,13 @@ jobs:
         run: |
           pip install pylint
 
-      - name: Fetch history
-        shell: bash
-        run: |
-          git fetch --all
-
-      - name: Set up environment
-        shell: bash
-        run: |
-          bash setupProject.sh
-
       - name: Run Pylint
         shell: bash
         run: |
           # Get the list of changed files and calculate the total pylint score for them
           
-          # Activate the virtual environment
+          # Setup the project and activate the virtual environment
+          bash setupProject.sh
           source .venv/bin/activate
           echo "Active Virtual Environment: ${VIRTUAL_ENV}"
           
