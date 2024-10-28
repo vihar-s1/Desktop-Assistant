@@ -4,8 +4,8 @@
 
 echo "Starting project setup..."
 
-# Check if the system is macOS and install portaudio using brew
-if [[ "$OSTYPE" == "darwin"* ]]; then
+# Check if the system is macOS or Linux and install portaudio using brew
+if [[ "$OSTYPE" == "darwin"* || "$OSTYPE" == "linux-gnu"* ]]; then
     echo "MacOS detected, installing portaudio using brew..."
     brew install portaudio
 fi
