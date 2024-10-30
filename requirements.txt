@@ -4,6 +4,7 @@
 #
 #    pip-compile --no-annotate --output-file=requirements_temp.txt requirements.txt
 #
+appopener~=1.6
 beautifulsoup4~=4.12.2
 build~=1.0.3
 certifi~=2024.7.4

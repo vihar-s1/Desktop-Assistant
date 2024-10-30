@@ -58,11 +58,9 @@ class Assistant:
         """
         if query is None:
             print("No query detected. Please provide an input.")
+
         elif "what can you do" in query:
             support.explain_features(self.__voice_interface)
-
-        elif re.match(r"(what|all|list).*apps.*open", query):
-            support.possible_apps_and_webs(self.__voice_interface)
 
         elif re.search(r"search .* (in google)?", query):
             # to convert to a generalized format
@@ -115,6 +113,7 @@ class Assistant:
                 support.simple_scroll(direction)
             else:
                 print("Scroll command not recognized")
+
         else:
             self.__voice_interface.speak("could not interpret the query")
 

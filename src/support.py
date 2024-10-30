@@ -9,37 +9,42 @@ This module contains the functions that support the Assistant in performing vari
 """
 
 import os
+import subprocess
+import sys
 import threading
 import time
 from datetime import datetime
+from subprocess import CalledProcessError, TimeoutExpired
 
 import googlesearch
 import pyautogui as pag
 import pygetwindow as gw
 import wikipedia
+from AppOpener import open as open_app
 from PIL import ImageGrab
 
-from external_paths import AppPath, WebPath, features
 from voice_interface import VoiceInterface
 
 # include the actual code to gradual score
+# TODO: Remove the global variables scroll thread and stop scroll event
 SCROLL_THREAD = None
 STOP_SCROLL_EVENT = threading.Event()
+
+SUPPORTED_FEATURES = {
+    "search your query in google and return upto 10 results",
+    "get a wikipedia search summary of upto 3 sentences",
+    "open applications or websites",
+    "tell you the time of the day",
+    "scroll the screen with active cursor",
+}
 
 
 def clear_screen() -> None:
     """Clears the screen based on the operating system"""
-    if os.name == "posix":
-        os.system("clear")
-    else:
+    if __is_windows__():
         os.system("cls")
-
-
-def possible_apps_and_webs(vi: VoiceInterface) -> None:
-    """Lists all the possible applications and websites that can be opened"""
-    vi.speak("Here is a list of all apps and websites I can open:")
-    vi.speak("\n".join(AppPath.keys()))
-    vi.speak("\n".join(WebPath.keys()))
+    else:
+        os.system("clear")
 
 
 def explain_features(vi: VoiceInterface) -> None:
@@ -49,7 +54,7 @@ def explain_features(vi: VoiceInterface) -> None:
         vi (VoiceInterface): The voice interface instance used to speak the text
     """
     vi.speak("Here's what I can do...\n")
-    for feature in features:
+    for feature in SUPPORTED_FEATURES:
         vi.speak(f"--> {feature}")
 
 
@@ -124,20 +129,100 @@ def open_application_website(vi: VoiceInterface, search_query: str) -> None:
         ValueError: Throws exception in case neither app nor web access-point is present.
     """
     vi.speak(f"Attempting to open {search_query}...")
-    if search_query in AppPath.keys():
-        try:
-            os.startfile(AppPath[search_query.strip()])
-        except Exception as error:
-            vi.speak(f"Error: {error}: Failed to open {search_query}")
 
-    elif search_query in WebPath.keys():
-        try:
-            os.startfile(WebPath[search_query.strip()])
-        except Exception as error:
-            vi.speak(f"Error: {error}: Failed to open {search_query}")
+    search_query = search_query.strip().lower()
 
+    # use appopener to open the application only if os is windows
+    if __is_windows__():
+        __open_application_website_windows__(vi, search_query)
+    if __is_darwin__():
+        __open_application_website_darwin__(vi, search_query)
+    elif __is_posix__():
+        __open_application_website_posix__(vi, search_query)
     else:
-        raise ValueError(f"Missing Access-point for {search_query}")
+        raise ValueError(f"Unsupported OS: {__system_os__()}")
+
+
+def __open_application_website_windows__(vi: VoiceInterface, search_query: str) -> None:
+    """handle the opening of application/website for Windows OS
+
+    Args:
+        vi (VoiceInterface): VoiceInterface instance used to speak.
+        search_query (str): The website or application name
+
+    Raises:
+        ValueError: Throws exception in case neither app nor web access-point is present.
+    """
+    try:
+        open_app(search_query, match_closest=True)  # attempt to open as application
+    except Exception as error:
+        vi.speak(f"Error: {error}: Failed to open {search_query}")
+
+
+def __open_application_website_darwin__(vi: VoiceInterface, search_query: str) -> None:
+    """handle the opening of application/website for Darwin OS
+
+    Args:
+        vi (VoiceInterface): VoiceInterface instance used to speak.
+        search_query (str): The website or application name
+
+    Raises:
+        ValueError: Throws exception in case neither app nor web access-point is present.
+    """
+    try:
+        subprocess.run(
+            ["open", "-a", search_query], capture_output=True, check=True
+        )  # attempt to open as application
+    except CalledProcessError:
+        try:
+            subprocess.run(
+                ["open", search_query], capture_output=True, check=True
+            )  # attempt to open as website
+        except CalledProcessError as error:
+            return_code = error.returncode
+            stdout_text = error.stdout.decode("utf-8")
+            stderr_text = error.stderr.decode("utf-8")
+            vi.speak(
+                f"Error: {error}: Failed to open {search_query}: error code {return_code}"
+            )
+            if stdout_text:
+                print("stdout:", stdout_text)
+            if stderr_text:
+                print("stderr:", stderr_text)
+        except TimeoutExpired as error:
+            vi.speak(f"Error: {error}: Call to open {search_query} timed out.")
+
+    except TimeoutExpired as error:
+        vi.speak(f"Error: {error}: Call to open {search_query} timed out.")
+
+
+def __open_application_website_posix__(vi: VoiceInterface, search_query: str) -> None:
+    """handle the opening of application/website for POSIX OS
+
+    Args:
+        vi (VoiceInterface): VoiceInterface instance used to speak.
+        search_query (str): The website or application name
+
+    Raises:
+        ValueError: Throws exception in case neither app nor web access-point is present.
+    """
+    try:
+        subprocess.run(
+            ["xdg-open", search_query], capture_output=True, check=True
+        )  # attempt to open website/application
+    except CalledProcessError as error:
+        vi.speak(
+            f"Error: {error}: Failed to open {search_query}: error code {error.returncode}"
+        )
+        stdout_text = error.stdout.decode("utf-8")
+        stderr_text = error.stderr.decode("utf-8")
+        if stdout_text:
+            print("stdout:", stdout_text)
+        if stderr_text:
+            print("stderr:", stderr_text)
+
+    except TimeoutExpired as error:
+        vi.speak(f"Error: {error}: Call to open {search_query} timed out.")
 
 
 def tell_time(vi: VoiceInterface) -> None:
@@ -265,3 +350,23 @@ def simple_scroll(direction: str) -> None:
 
         else:
             print("Invalid direction")
+
+
+def __is_windows__() -> bool:
+    """Returns True if the operating system is Windows"""
+    return sys.platform in ["win32", "cygwin"]
+
+
+def __is_darwin__() -> bool:
+    """Returns True if the operating system is Darwin"""
+    return sys.platform in ["darwin", "ios"]
+
+
+def __is_posix__() -> bool:
+    """Returns True if the operating system is POSIX"""
+    return sys.platform in ["aix", "android", "emscripten", "linux", "darwin", "wasi"]
+
+
+def __system_os__() -> str:
+    """Returns the name of the operating system"""
+    return sys.platform
