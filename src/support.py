@@ -20,10 +20,11 @@ import googlesearch
 import pyautogui as pag
 import pygetwindow as gw
 import wikipedia
-from AppOpener import open as open_app
 from PIL import ImageGrab
 
 from voice_interface import VoiceInterface
+
+# . Conditional Imports after defining "__" functions
 
 # include the actual code to gradual score
 # TODO: Remove the global variables scroll thread and stop scroll event
@@ -39,9 +40,35 @@ SUPPORTED_FEATURES = {
 }
 
 
+def __is_windows() -> bool:
+    """Returns True if the operating system is Windows"""
+    return sys.platform in ["win32", "cygwin"]
+
+
+def __is_darwin() -> bool:
+    """Returns True if the operating system is Darwin"""
+    return sys.platform in ["darwin", "ios"]
+
+
+def __is_posix() -> bool:
+    """Returns True if the operating system is POSIX"""
+    return sys.platform in ["aix", "android", "emscripten", "linux", "darwin", "wasi"]
+
+
+def __system_os() -> str:
+    """Returns the name of the operating system"""
+    return sys.platform
+
+
+########## Conditional Imports ##########
+if __is_windows():
+    from AppOpener import open as open_app
+########## Conditional Imports ##########
+
+
 def clear_screen() -> None:
     """Clears the screen based on the operating system"""
-    if __is_windows__():
+    if __is_windows():
         os.system("cls")
     else:
         os.system("clear")
@@ -130,14 +157,14 @@ def open_application_website(vi: VoiceInterface, search_query: str) -> None:
     search_query = search_query.strip().lower()
 
     # use appopener to open the application only if os is windows
-    if __is_windows__():
+    if __is_windows():
         __open_application_website_windows__(vi, search_query)
-    if __is_darwin__():
+    if __is_darwin():
         __open_application_website_darwin__(vi, search_query)
-    elif __is_posix__():
+    elif __is_posix():
         __open_application_website_posix__(vi, search_query)
     else:
-        raise ValueError(f"Unsupported OS: {__system_os__()}")
+        raise ValueError(f"Unsupported OS: {__system_os()}")
 
 
 def __open_application_website_windows__(vi: VoiceInterface, search_query: str) -> None:
@@ -332,6 +359,7 @@ def scroll_to(direction: str) -> None:
 def simple_scroll(direction: str) -> None:
     """Simple scroll in the given direction by a fixed number of steps."""
     active_window = gw.getActiveWindow()
+    print(f"active_window: {active_window}: {type(active_window)}")
     if active_window:
         # Bring the active window to the front
         # active_window.activate()
@@ -347,23 +375,3 @@ def simple_scroll(direction: str) -> None:
 
         else:
             print("Invalid direction")
-
-
-def __is_windows__() -> bool:
-    """Returns True if the operating system is Windows"""
-    return sys.platform in ["win32", "cygwin"]
-
-
-def __is_darwin__() -> bool:
-    """Returns True if the operating system is Darwin"""
-    return sys.platform in ["darwin", "ios"]
-
-
-def __is_posix__() -> bool:
-    """Returns True if the operating system is POSIX"""
-    return sys.platform in ["aix", "android", "emscripten", "linux", "darwin", "wasi"]
-
-
-def __system_os__() -> str:
-    """Returns the name of the operating system"""
-    return sys.platform
