@@ -76,14 +76,11 @@ def run_search_query(vi: VoiceInterface, search_query: str) -> None:
     results = googlesearch.search(term=search_query)
     if not results:
         vi.speak("No Search Result Found!!")
-
-    try:
+    else:
         results = list(results)
         vi.speak("Found Following Results: ")
         for i, result in enumerate(results):
             print(i + 1, ")", result.title)
-    except Exception as error:
-        print(error.__str__)
 
 
 def wikipedia_search(

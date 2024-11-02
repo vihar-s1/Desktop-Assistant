@@ -82,9 +82,12 @@ class Assistant:
             application = application[0]
             try:
                 support.open_application_website(self.__voice_interface, application)
-            except ValueError:
+            except ValueError as ve:
+                print(
+                    f"Error occurred while opening {application}: {ve.__class__.__name__}: {ve}"
+                )
                 self.__voice_interface.speak(
-                    f"Access point Matching {application} not found !"
+                    f"Failed to open {application}. Please try again."
                 )
 
         elif any(text in query for text in ["the time", "time please"]):
