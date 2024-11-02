@@ -8,7 +8,7 @@
 
 <!-- ![Project Logo](logo.png) -->
 
-A simple voice-assisted desktop assistant made in Python. The assistant will have basic features supporting daily laptop usage.
+A simple Python-based desktop assistant that can perform basic tasks like searching on Google, opening applications, telling the time, and more WITHOUT the use of Machine Learning (ML) or Artificial Intelligence (AI).
 
 ## Table of Contents
 
@@ -25,30 +25,24 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
 
 ## 🚀 Introduction
 
-- A Python-based desktop assistant configured to automate some of the day-to-day tasks and help save time.
-- Voice assistance is used to provide a hands-free interface to the user as the assistant can run in the background while performing day-to-day tasks.
-- `external_paths.py` and `support.py` files are for having additional globally required variables, and query functions
-  handling individual queries respectively.
-- The `voice_interface.py` file contains the **_VoiceInterface_** class which handles the abstraction of user voice
-  recognition and assistant speech.
-- The `assistant.py` file contains the main code integrating everything together to run the assistant properly.
+- The project is a simple Python-based desktop assistant that can perform basic tasks like searching on Google, opening applications, telling the time, and more.
+- The assistant is still in the development phase, and more features will be added in the future.
+- The assistant is built using Python and does not use any Machine Learning (ML) or Artificial Intelligence (AI) models.
+- The assistant is built using the `pyttsx3` library for text-to-speech conversion and the `speech_recognition` library for speech recognition.
+- The project is open-source and contributions and/or feature requests are always welcome.
 
 ## ✨ Features
 
 - Google and Wikipedia searches 🌐
-- Run applications or websites from a predefined map/list 🚀
+- Open applications and websites 🚀
 - Tell time of the day in _hour **:** minute **:** second_ format ⏰
+- Scroll the screen up and down, left and right. 📜
 
 ## 🚀 Getting Started
 
-- Fork or download the project.
-- Install the Python dependencies mentioned in the `requirements.txt` file using pip or pip3.
-- Run the main Python file named `assistant.py` in the project root folder to run the assistant.
+To get started with the project, follow the instructions below.
 
-### 📋 Prerequisites
-
-- The project is coded using `Python 3.11.0`, so it would be best to install an equivalent or later version.
-- The modules required are listed in the requirements.txt file which can be installed as discussed below.
+- The project is built using Python, so make sure you have Python installed on your system.
 
 ### 🛠️ Installation
 
@@ -58,7 +52,7 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
     git clone https://github.com/vihar-s1/Desktop-Assistant
     ```
 
-2. In the project root directory run following script to create a virtual environment, and setup the project.
+2. In the project root directory run `setupProject.sh` script to create a virtual environment, and setup the project.
 
     ```bash
     bash setupProject.sh
@@ -67,12 +61,12 @@ A simple voice-assisted desktop assistant made in Python. The assistant will hav
 3. Once setup is complete, simply run the `assistant.py` file to start using the Assistant.
 
     ```bash
-    python assistant.py
+    python3 assistant.py
     ```
 
 ### 🛠️ macOS Specific Fixes
 
-If you encounter the following error on MacOS:
+If you encounter the following error on macOS:
 
 #### @objc.python_method annotation error
 
@@ -113,15 +107,7 @@ objc.super(NSSpeechDriver, self).init()
 
 - If you want to contribute, follow the contribution guidelines
   here: [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md).
-
-```bash
-python -m venv .venv
-source .venv/Scripts/activate
-pip install -r requirements.txt
-```
   
-- Make Sure to update the `requirements.txt` file by adding to it appropriate required packages and corresponding versions.
-
 ## 🐞 Bug Reports and Feature Requests
 
 - If you encounter an issue or want to report a bug, following is

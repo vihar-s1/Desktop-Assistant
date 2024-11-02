@@ -4,47 +4,60 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
 
 ## How to Contribute
 
-1. **Fork the Project:** Click the "Fork" button at the top-right to create your copy of the project.
+1. **_Fork the Project:_** Click the "Fork" button at the top-right to create your copy of the project.
 
-2. **Clone Your Fork:** Copy the URL from the address bar and run the following command in your terminal.
+2. **_Clone Your Fork:_** Copy the URL from the address bar and run the following command in your terminal.
 
     ```bash
     git clone <your-fork-url>
     cd Desktop-Assistant
     ```
-3. **Set Up the Project:** Run the following script to create a virtual environment, install the necessary libraries and pre-commit hooks, and set up the project. 
+3. **_Set Up the Project:_** Run the following script to create a virtual environment, install the necessary libraries and pre-commit hooks to set up the project. 
 
     ```bash
     bash setupProject.sh
     ```
 
-4. **Create a New Branch:** Create a new branch to work on your changes.
+4. **_Create a New Branch:_** Create a new branch from the `main` branch to work on your changes.
 
     ```bash
-    git checkout -b <new-branch-name>
-    ``
+    git switch -c <new-branch-name>
+    ```
 
-5. **Make Changes:** Work on what interests you - add new features, fix bugs, or improve documentation on a **_separate branch_**. It's your playground!
+5. **_Make Changes:_** Work on the issue you're assigned to or the feature you want to add. Make sure to test your changes.
+   - Any new command added should be implemented via a function in the `commands.py` file.
+   - Any additional functionality should be added in the `infra.py` file.
+   - DO NOT DEFINE ANY GLOBAL VARIABLES IN THE `infra.py` or `commands.py`. Define a class variable inside `__init__(self)` method of `Assistant` class if you have to.
+     - All the functions implemented in the `infra.py` and `commnds.py` file should be python equivalent of _static_ methods.
 
-6. **Commit Changes:** Use clear and simple commit messages. For example:
+6. **_Run the Pre-commit hooks:_** The pre-commit hooks are set up to ensure that the code is formatted correctly and passes the linting checks. They are already set up in the project and configured via the `.pre-commit-config.yaml` file. To run the pre-commit hooks, use the following command:
+     ```bash
+     pre-commit run --all-files
+     ```
+   - The hooks automatically resolve any issues occuring in the code. So, in the case hook fails, run them again to ensure that the issues are resolved in the previous run.
 
+7. **_Commit Changes:_** Use clear and simple commit messages. For example:
     - "Added a weather command"
     - "Fixed voice recognition bug"
-
         ```bash
         git commit -m "<mandatory commit message here>" -m "<optional commit description here>"
         ```
 
-7. **Push to Your Fork:** Send your changes back to your forked repository.
+8. **_Push to Your Fork:_** Send your changes back to your forked repository.
 
     ```bash
     git push origin <branch-name>
     ```
 
-8. **Create a Pull Request (PR):** Open a PR to the `main` branch of `vihar-s1/Desktop-Assistant`. Describe your changes briefly and why they're awesome. MAKE SURE TO USE THE PREDEFINED PULL REQUEST TEMPLATE.
+9. **_Create a Pull Request (PR):_** Open a PR to the `main` branch of `vihar-s1/Desktop-Assistant`. Describe your changes briefly and why they're awesome. MAKE SURE TO FOLLOW THE PREDEFINED PULL REQUEST TEMPLATE.
 
-9. Note that the PR will have to successfully pass all the workflows setup via GitHub action. A successfully checked PR
-   will be then reviewed and then merged. Any changes suggested must be met before PR can be merged.
+10. **_Workflow Checks and PR Review:_** Note that the PR will have to successfully pass all the workflows setup via GitHub action. A successfully checked PR
+    will be then reviewed and then merged. Any changes suggested must be met before PR can be merged.
+
+## Additional Notes
+
+- If you are adding any new features, make sure to update the `README.md` file with the new feature details.
+- If you are adding a new pre-commit hook, make sure to use the appropriate latest version of the hook when updating the `.pre-commit-config.yaml` file.
 
 ## Guidelines
 
