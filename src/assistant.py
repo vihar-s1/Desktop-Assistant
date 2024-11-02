@@ -11,7 +11,8 @@ This module contains the Assistant class, which listens to user queries and resp
 import re
 from datetime import datetime
 
-import support
+import commands
+from infra import clear_screen
 from voice_interface import VoiceInterface
 
 LISTENING_ERROR = "Say that again please..."
@@ -23,8 +24,10 @@ class Assistant:
     """
 
     def __init__(self):
-        """Creates an Assistant instance consisting of an VoiceInterface instance"""
+        """Creates an Assistant instance consisting of a VoiceInterface instance"""
         self.__voice_interface = VoiceInterface()
+        self.__scrolling_thread = None
+        self.__stop_scrolling_event = None
 
     def wish_user(self):
         """Wishes user based on the hour of the day"""
@@ -60,19 +63,19 @@ class Assistant:
             print("No query detected. Please provide an input.")
 
         elif "what can you do" in query:
-            support.explain_features(self.__voice_interface)
+            commands.explain_features(self.__voice_interface)
 
         elif re.search(r"search .* (in google)?", query):
             # to convert to a generalized format
             query = query.replace(" in google", "")
             search_query = re.findall(r"search (.*)", query)[0]
-            support.run_search_query(self.__voice_interface, search_query)
+            commands.run_search_query(self.__voice_interface, search_query)
 
         elif "wikipedia" in query:
-            # replace only once to prevent changing the query
+            # replace it only once to prevent changing the query
             query = query.replace("wikipedia", "", 1)
             search_query = query.replace("search", "", 1)
-            support.wikipedia_search(self.__voice_interface, search_query, 3)
+            commands.wikipedia_search(self.__voice_interface, search_query, 3)
 
         elif re.search("open .*", query):
             application = re.findall(r"open (.*)", query)
@@ -81,7 +84,7 @@ class Assistant:
                 return
             application = application[0]
             try:
-                support.open_application_website(self.__voice_interface, application)
+                commands.open_application_website(self.__voice_interface, application)
             except ValueError as ve:
                 print(
                     f"Error occurred while opening {application}: {ve.__class__.__name__}: {ve}"
@@ -91,29 +94,34 @@ class Assistant:
                 )
 
         elif any(text in query for text in ["the time", "time please"]):
-            support.tell_time(self.__voice_interface)
+            commands.tell_time(self.__voice_interface)
 
         elif "scroll" in query:
-            if re.search(r"start scrolling (up|down|left|right|top|bottom)", query):
-                direction = re.findall(
-                    r"start scrolling (up|down|left|right|top|bottom)", query
-                )[0]
-                scroll_thread, stop_scroll_event = support.setup_scrolling()
-                if scroll_thread is None:  # Only start if not already scrolling
-                    support.start_scrolling(direction)
+            direction = re.search(r"(up|down|left|right|top|bottom)", query)
+            if direction is None:
+                print("Scroll direction not recognized")
+                return
+            direction = direction.group(0)
 
+            if re.search(r"start scrolling (up|down|left|right|top|bottom)", query):
+                if (
+                    self.__scrolling_thread is None
+                ):  # Only start if not already scrolling
+                    self.__scrolling_thread, self.__stop_scrolling_event = (
+                        commands.start_scrolling(direction)
+                    )
             elif "stop scrolling" in query:
-                scroll_thread, stop_scroll_event = support.setup_scrolling()
-                if scroll_thread is not None:
-                    support.stop_scrolling()
+                if self.__scrolling_thread is None:  # Only stop if already scrolling
+                    return
+                commands.stop_scrolling(
+                    self.__scrolling_thread, self.__stop_scrolling_event
+                )
+                del self.__scrolling_thread
+                self.__scrolling_thread = None
             elif re.search(r"scroll to (up|down|left|right|top|bottom)", query):
-                match = re.search(r"scroll to (up|down|left|right|top|bottom)", query)
-                direction = match.group(1)
-                support.scroll_to(direction)
+                commands.scroll_to(direction)
             elif re.search(r"scroll (up|down|left|right)", query):
-                match = re.search(r"scroll (up|down|left|right)", query)
-                direction = match.group(1)
-                support.simple_scroll(direction)
+                commands.simple_scroll(direction)
             else:
                 print("Scroll command not recognized")
 
@@ -124,19 +132,26 @@ class Assistant:
         """Close the VoiceInterface instance and delete other variables"""
         self.__voice_interface.close()
         del self.__voice_interface
+        if self.__scrolling_thread:
+            commands.stop_scrolling(
+                self.__scrolling_thread, self.__stop_scrolling_event
+            )
+            del self.__scrolling_thread
+        if self.__stop_scrolling_event:
+            del self.__stop_scrolling_event
 
     def reset(self):
         """Re-instantiate VoiceInterface instance and other variables"""
-        if self.__voice_interface:
-            self.__voice_interface.close()
-            del self.__voice_interface
+        self.close()
         self.__voice_interface = VoiceInterface()
+        self.__scrolling_thread = None
+        self.__stop_scrolling_event = None
 
 
 def __main__():
     assistant = Assistant()
     assistant.wish_user()
-    support.clear_screen()
+    clear_screen()
     while True:
         query = assistant.listen_for_query()
         assistant.execute_query(query)
