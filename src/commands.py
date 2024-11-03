@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Support
+Features
 ===============
 
-This module contains the functions that support the Assistant in performing various tasks.
+This module contains all the functions pertaining to implementing the
+individual features of the Assistant.
 
 """
 
-import os
 import subprocess
-import sys
 import threading
 import time
 from datetime import datetime
@@ -18,18 +17,12 @@ from subprocess import CalledProcessError, TimeoutExpired
 
 import googlesearch
 import pyautogui as pag
-import pygetwindow as gw
+import pygetwindow
 import wikipedia
 from PIL import ImageGrab
 
+from infra import __is_darwin, __is_posix, __is_windows, __system_os
 from voice_interface import VoiceInterface
-
-# . Conditional Imports after defining "__" functions
-
-# include the actual code to gradual score
-# TODO: Remove the global variables scroll thread and stop scroll event
-SCROLL_THREAD = None
-STOP_SCROLL_EVENT = threading.Event()
 
 SUPPORTED_FEATURES = {
     "search your query in google and return upto 10 results",
@@ -39,39 +32,10 @@ SUPPORTED_FEATURES = {
     "scroll the screen with active cursor",
 }
 
-
-def __is_windows() -> bool:
-    """Returns True if the operating system is Windows"""
-    return sys.platform in ["win32", "cygwin"]
-
-
-def __is_darwin() -> bool:
-    """Returns True if the operating system is Darwin"""
-    return sys.platform in ["darwin", "ios"]
-
-
-def __is_posix() -> bool:
-    """Returns True if the operating system is POSIX"""
-    return sys.platform in ["aix", "android", "emscripten", "linux", "darwin", "wasi"]
-
-
-def __system_os() -> str:
-    """Returns the name of the operating system"""
-    return sys.platform
-
-
 ########## Conditional Imports ##########
 if __is_windows():
     from AppOpener import open as open_app
 ########## Conditional Imports ##########
-
-
-def clear_screen() -> None:
-    """Clears the screen based on the operating system"""
-    if __is_windows():
-        os.system("cls")
-    else:
-        os.system("clear")
 
 
 def explain_features(vi: VoiceInterface) -> None:
@@ -92,10 +56,6 @@ def run_search_query(vi: VoiceInterface, search_query: str) -> None:
         vi (VoiceInterface): VoiceInterface instance used to speak
         search_query (str): the query term to be searched in google
     """
-    if not isinstance(vi, VoiceInterface):
-        raise ValueError(
-            f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}"
-        )
     if not search_query:
         vi.speak("Invalid Google Search Query Found!!")
         return
@@ -158,16 +118,16 @@ def open_application_website(vi: VoiceInterface, search_query: str) -> None:
 
     # use appopener to open the application only if os is windows
     if __is_windows():
-        __open_application_website_windows__(vi, search_query)
+        __open_application_website_windows(vi, search_query)
     if __is_darwin():
-        __open_application_website_darwin__(vi, search_query)
+        __open_application_website_darwin(vi, search_query)
     elif __is_posix():
-        __open_application_website_posix__(vi, search_query)
+        __open_application_website_posix(vi, search_query)
     else:
         raise ValueError(f"Unsupported OS: {__system_os()}")
 
 
-def __open_application_website_windows__(vi: VoiceInterface, search_query: str) -> None:
+def __open_application_website_windows(vi: VoiceInterface, search_query: str) -> None:
     """handle the opening of application/website for Windows OS
 
     Args:
@@ -183,7 +143,7 @@ def __open_application_website_windows__(vi: VoiceInterface, search_query: str) 
         vi.speak(f"Error: {error}: Failed to open {search_query}")
 
 
-def __open_application_website_darwin__(vi: VoiceInterface, search_query: str) -> None:
+def __open_application_website_darwin(vi: VoiceInterface, search_query: str) -> None:
     """handle the opening of application/website for Darwin OS
 
     Args:
@@ -220,7 +180,7 @@ def __open_application_website_darwin__(vi: VoiceInterface, search_query: str) -
         vi.speak(f"Error: {error}: Call to open {search_query} timed out.")
 
 
-def __open_application_website_posix__(vi: VoiceInterface, search_query: str) -> None:
+def __open_application_website_posix(vi: VoiceInterface, search_query: str) -> None:
     """handle the opening of application/website for POSIX OS
 
     Args:
@@ -255,11 +215,6 @@ def tell_time(vi: VoiceInterface) -> None:
     Args:
         vi (VoiceInterface): Voice interface instance used to speak
     """
-    if not isinstance(vi, VoiceInterface):
-        raise ValueError(
-            f"Argument 'vi' should be of type {VoiceInterface}, found {type(vi)}"
-        )
-
     date_time = datetime.now()
     hour, minute, second = date_time.hour, date_time.minute, date_time.second
     tmz = date_time.tzname()
@@ -267,111 +222,74 @@ def tell_time(vi: VoiceInterface) -> None:
     vi.speak(f"Current time is {hour}:{minute}:{second} {tmz}")
 
 
-def setup_scrolling() -> tuple[threading.Thread | None, threading.Event]:
-    """Set up the scrolling thread and "stop scroll" event if not already setup."""
-    if not hasattr(setup_scrolling, "SCROLL_THREAD"):
-        setup_scrolling.SCROLL_THREAD = None
-    if not hasattr(setup_scrolling, "STOP_SCROLL_EVENT"):
-        setup_scrolling.STOP_SCROLL_EVENT = threading.Event()
-
-    return setup_scrolling.SCROLL_THREAD, setup_scrolling.STOP_SCROLL_EVENT
-
-
 def start_gradual_scroll(direction: str, stop_event: threading.Event) -> None:
     """Gradually scroll in the given direction until stop_event is set."""
-    time.sleep(2)
-    active_window = pag.getActiveWindow()
-    if active_window:
+    active_window = pygetwindow.getActiveWindow()
+    if not active_window:
+        return
 
-        left, top, width, height = (
-            active_window.left,
-            active_window.top,
-            active_window.width,
-            active_window.height,
-        )
+    # Capture a portion of the window to ensure scrolling
+    left, top, right, bottom = 0, 0, 100, 100
+    width = right - left
+    height = bottom - top
+    previous_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))
+    while not stop_event.is_set():
+        pag.scroll(clicks=1)
+        current_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))
 
-        previous_image = ImageGrab.grab(
-            # Capture the entire window
-            bbox=(left, top, left + width, top + height)
-        )
+        if current_image.getdata() == previous_image.getdata():
+            print("Reached to extreme")
+            stop_event.set()
+            break
+        previous_image = current_image
 
-        while True:
-            if stop_event.is_set():
-                break
-            pag.press(direction)
-            time.sleep(1)
-            current_image = ImageGrab.grab(bbox=(left, top, left + width, top + height))
-
-            if list(current_image.getdata()) == list(previous_image.getdata()):
-                print("Reached to extreme")
-                stop_event.set()
-                setup_scrolling.SCROLL_THREAD = None
-                break
-            previous_image = current_image
-
-        print(f"Scrolling {direction}...")  # Simulate scrolling action
-        # Simulate delay between scroll actions
     print(f"Stopped scrolling {direction}.")
 
 
-def start_scrolling(direction: str) -> None:
+def start_scrolling(direction: str) -> tuple[threading.Thread, threading.Event]:
     """Start a new scroll thread."""
-    setup_scrolling.STOP_SCROLL_EVENT.clear()
-    setup_scrolling.SCROLL_THREAD = threading.Thread(
-        target=start_gradual_scroll, args=(direction, setup_scrolling.STOP_SCROLL_EVENT)
+    stop_scrolling_event = threading.Event()
+    scrolling_thread = threading.Thread(
+        target=start_gradual_scroll, args=(direction, stop_scrolling_event)
     )
-    setup_scrolling.SCROLL_THREAD.start()
+    scrolling_thread.start()
+    return scrolling_thread, stop_scrolling_event
 
 
-def stop_scrolling() -> None:
-    """Stop the current scrolling thread."""
-    setup_scrolling.STOP_SCROLL_EVENT.set()
-    if setup_scrolling.SCROLL_THREAD is not None:
-        setup_scrolling.SCROLL_THREAD.join()
-        setup_scrolling.SCROLL_THREAD = None
-    print("Scrolling has stopped.")
+def stop_scrolling(
+    scrolling_thread: threading.Thread, scrolling_thread_event: threading.Event
+) -> None:
+    """Stop the scrolling thread if not already stopped."""
+    if scrolling_thread is not None:
+        scrolling_thread_event.set()
+        scrolling_thread.join()
 
 
 def scroll_to(direction: str) -> None:
     """Scroll to the extreme in the given direction."""
-    active_window = gw.getActiveWindow()
-    if active_window:
-        # Bring the active window to the front
-        active_window.activate()
-        time.sleep(0.5)
-        if direction == "top":
-            pag.press("home")
-
-        elif direction == "bottom":
-            pag.press("end")
-
-        elif direction == "right":
-            pag.press("right", presses=9999)
-
-        elif direction == "left":
-            pag.press("left", presses=9999)
-
-        else:
-            print("Invalid Command")
+    active_window = pygetwindow.getActiveWindow()
+    if not active_window:
+        return
+    time.sleep(0.5)
+    if direction == "top":
+        pag.press("home")
+    elif direction == "bottom":
+        pag.press("end")
+    elif direction == "right":
+        pag.press("right", presses=9999)
+    elif direction == "left":
+        pag.press("left", presses=9999)
+    else:
+        print("Invalid Command")
 
 
-# pygetwindow and implement
 def simple_scroll(direction: str) -> None:
     """Simple scroll in the given direction by a fixed number of steps."""
-    active_window = gw.getActiveWindow()
-    print(f"active_window: {active_window}: {type(active_window)}")
-    if active_window:
-        # Bring the active window to the front
-        # active_window.activate()
-        time.sleep(0.5)
-        if direction == "up":
-            pag.press("up", presses=25)
-        elif direction == "down":
-            pag.press("down", presses=25)
-        elif direction == "right":
-            pag.press("right", presses=25)
-        elif direction == "left":
-            pag.press("left", presses=25)
-
-        else:
-            print("Invalid direction")
+    active_window = pygetwindow.getActiveWindow()
+    if not active_window:
+        return
+    time.sleep(0.5)
+    if direction in ["up", "down", "left", "right"]:
+        pag.press(keys=direction, presses=25)
+    else:
+        print("Invalid direction")
