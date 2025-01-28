@@ -296,24 +296,24 @@ def simple_scroll(direction: str) -> None:
         print("Invalid direction")
 
 
-    def fetch_news(vi: VoiceInterface) -> None:
-        """News Reporter fetches headlines from news.google.com rss feed and reads top 5 headlines"""
+def fetch_news(vi: VoiceInterface) -> None:
+    """News Reporter fetches headlines from news.google.com rss feed and reads top 5 headlines"""
 
-        feed_url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
-        max_fetched_headlines = 5
+    feed_url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
+    max_fetched_headlines = 5
 
-        vi.speak("Fetching news from servers.")
+    vi.speak("Fetching news from servers.")
 
-        feed = feedparser.parse(feed_url)
-        if feed.status == 200:
-            headlines_list = []
-            for entry in feed.entries[:max_fetched_headlines]:
-                headlines_list.append((entry.title).split(" -")[0])
+    feed = feedparser.parse(feed_url)
+    if feed.status == 200:
+        headlines_list = []
+        for entry in feed.entries[:max_fetched_headlines]:
+            headlines_list.append((entry.title).split(" -")[0])
 
-            vi.speak("Here are some recent news headlines.")
+        vi.speak("Here are some recent news headlines.")
 
-            for headline in headlines_list:
-                vi.speak(headline)
+        for headline in headlines_list:
+            vi.speak(headline)
 
-        else:
-            vi.speak("Failed to fetch the news.")
+    else:
+        vi.speak("Failed to fetch the news.")
