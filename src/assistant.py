@@ -124,6 +124,9 @@ class Assistant:
                 commands.simple_scroll(direction)
             else:
                 print("Scroll command not recognized")
+                
+        elif "news" in query:
+            commands.fetch_news(self.__voice_interface)
 
         else:
             self.__voice_interface.speak("could not interpret the query")

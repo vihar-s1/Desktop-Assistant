@@ -15,6 +15,7 @@ import time
 from datetime import datetime
 from subprocess import CalledProcessError, TimeoutExpired
 
+import feedparser
 import googlesearch
 import pyautogui as pag
 import pygetwindow
@@ -293,3 +294,26 @@ def simple_scroll(direction: str) -> None:
         pag.press(keys=direction, presses=25)
     else:
         print("Invalid direction")
+
+
+    def fetch_news(vi: VoiceInterface) -> None:
+        """News Reporter fetches headlines from news.google.com rss feed and reads top 5 headlines"""
+
+        feed_url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
+        max_fetched_headlines = 5
+
+        vi.speak("Fetching news from servers.")
+
+        feed = feedparser.parse(feed_url)
+        if feed.status == 200:
+            headlines_list = []
+            for entry in feed.entries[:max_fetched_headlines]:
+                headlines_list.append((entry.title).split(" -")[0])
+
+            vi.speak("Here are some recent news headlines.")
+
+            for headline in headlines_list:
+                vi.speak(headline)
+
+        else:
+            vi.speak("Failed to fetch the news.")
