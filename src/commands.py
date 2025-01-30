@@ -296,7 +296,7 @@ def simple_scroll(direction: str) -> None:
         print("Invalid direction")
 
 
-def fetch_news(vi: VoiceInterface) -> None:
+def fetch_news(vi: VoiceInterface, max_fetched_headlines: int) -> None:
     """
     Fetches and reads out the top 5 headlines from the Google News RSS feed.
 
@@ -313,7 +313,6 @@ def fetch_news(vi: VoiceInterface) -> None:
     """
 
     feed_url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
-    max_fetched_headlines = 5
 
     vi.speak("Fetching news from servers.")
     feed = feedparser.parse(feed_url)
