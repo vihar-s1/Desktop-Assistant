@@ -298,6 +298,7 @@ def simple_scroll(direction: str) -> None:
     else:
         print("Invalid direction")
 
+
 def brightness_control(value: int, relative: bool, toDecrease: bool):
     """
     Adjusts the brightness of the monitor.
@@ -363,6 +364,7 @@ def volume_control(value: int, relative: bool, toDecrease: bool):
     else:
         volume.SetMasterVolumeLevelScalar(min(max(0, value), 100) / 100, None)
 
+
 def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
     """
     Fetches and reports the weather conditions for a given city.
@@ -417,4 +419,3 @@ def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
         f"The wind speed is expected to be {weather_data.get('wind_speed_10m')}{weather_units.get('wind_speed_10m')}, "
         "so plan accordingly."
     )
-
