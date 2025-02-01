@@ -296,6 +296,7 @@ def simple_scroll(direction: str) -> None:
     else:
         print("Invalid direction")
 
+
 def fetch_news(vi: VoiceInterface, max_fetched_headlines: int) -> None:
     """
     Fetches and reads out the top 5 headlines from the Google News RSS feed.
@@ -325,6 +326,7 @@ def fetch_news(vi: VoiceInterface, max_fetched_headlines: int) -> None:
             vi.speak(headline)
     else:
         vi.speak("Failed to fetch the news.")
+
 
 def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
     """
@@ -380,4 +382,3 @@ def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
         f"The wind speed is expected to be {weather_data.get('wind_speed_10m')}{weather_units.get('wind_speed_10m')}, "
         "so plan accordingly."
     )
-  
