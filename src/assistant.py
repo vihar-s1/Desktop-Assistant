@@ -125,6 +125,11 @@ class Assistant:
                 commands.simple_scroll(direction)
             else:
                 print("Scroll command not recognized")
+        elif "weather" in query:
+            cities = re.findall(
+                r"\b(?:of|in|at)\s+(\w+)", query
+            )  # Extract the city name just after the word 'of'
+            commands.weather_reporter(self.__voice_interface, cities[0])
 
         elif "brightness" in query:
             query = query.lower()
