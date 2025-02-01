@@ -1,0 +1,65 @@
+name: Code Optimisation Request 🚀
+description: Request a code optimisation change
+title: "[OPTIMISATION]: "
+labels: ["enhancement", "optimisation"]
+# projects: []
+# assignees: ["vihar-s1"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this code optimisation request! 🤗
+
+  - type: textarea
+    id: optimisation-description
+    attributes:
+      label: Brief Description of Optimisation
+      description: Tell us about the optimisation you are proposing. |
+        Use code snippets and examples where necessary to assist explanation.
+      placeholder: Describe the optimisation you want to propose.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-implementation
+    attributes:
+      label: Current Implementation
+      description: Provide details of the current implementation that you think can be optimized. |
+        Use code snippets and examples where necessary to assist explanation.
+      placeholder: Describe the current implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-implementation
+    attributes:
+      label: Proposed Implementation
+      description: Provide details of the proposed implementation. |
+        Use code snippets and examples where necessary to assist explanation.
+      placeholder: Describe the proposed implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits of Optimisation
+      description: Explain the benefits of the proposed optimisation. |
+        Use metrics and examples where necessary to assist explanation.
+      placeholder: Describe the benefits of the proposed optimisation.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Check-List
+      description: Please make sure to check the following milestones before submitting the optimisation request!
+      options:
+        - label: I have checked that a similar kind of optimisation request does not already exist!
+          required: true
+        - label: I have tested the proposed optimisation and it works as expected.
+          required: true
+        - label: I have read the [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md)
+          required: true
+        - label: I want to work on implementing the optimisation!
