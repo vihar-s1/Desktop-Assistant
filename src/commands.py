@@ -9,10 +9,15 @@ individual features of the Assistant.
 
 """
 
+import json
+import os
+import smtplib
+import ssl
 import subprocess
 import threading
 import time
 from datetime import datetime
+from email.message import EmailMessage
 from subprocess import CalledProcessError, TimeoutExpired
 
 import googlesearch
@@ -350,3 +355,32 @@ def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
         f"The wind speed is expected to be {weather_data.get('wind_speed_10m')}{weather_units.get('wind_speed_10m')}, "
         "so plan accordingly."
     )
+
+
+def send_email(vi: VoiceInterface, toEmail: str, subject: str, body: str):
+    """
+    Send an email to the specified recipient.
+
+    Args:
+        vi (VoiceInterface): VoiceInterface instance used to speak.
+        toEmail (str): The recipient's email address.
+        subject (str): The subject of the email.
+        body (str): The body content of the email.
+
+    Raises:
+        ValueError: If any required parameters are missing or invalid.
+    """
+    with open("./src/email_config.json", "r") as f:
+        data = json.load(f)
+    print(toEmail, subject, body)
+    CONTEXT = ssl.create_default_context()
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = data.get("username")
+    msg["To"] = [toEmail]
+    msg.set_content(body)
+    server = smtplib.SMTP_SSL(data.get("server"), data.get("port"), context=CONTEXT)
+    server.login(data.get("username"), os.environ["DESKTOP_ASSISTANT_SMTP_PWD"])
+    server.send_message(msg)
+    server.quit()
+    vi.speak(f"Email sent to {toEmail}")
