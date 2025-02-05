@@ -17,6 +17,9 @@ from infra import clear_screen
 from voice_interface import VoiceInterface
 
 LISTENING_ERROR = "Say that again please..."
+MAX_FETCHED_HEADLINES = (
+    10  # Maximum number of news headlines to fetch when news function is called
+)
 
 
 class Assistant:
@@ -182,6 +185,8 @@ class Assistant:
                 subprocess.run(["shutdown", "/r", "/t", "1"])
             else:
                 self.__voice_interface.speak("Request aborted by user")
+        elif "news" in query:
+            commands.fetch_news(self.__voice_interface, MAX_FETCHED_HEADLINES)
 
         else:
             self.__voice_interface.speak("could not interpret the query")
