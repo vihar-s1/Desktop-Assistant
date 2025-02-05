@@ -365,7 +365,7 @@ def volume_control(value: int, relative: bool, toDecrease: bool):
     else:
         volume.SetMasterVolumeLevelScalar(min(max(0, value), 100) / 100, None)
 
-        
+
 def fetch_news(vi: VoiceInterface, max_fetched_headlines: int) -> None:
     """
     Fetches and reads out the top 5 headlines from the Google News RSS feed.
