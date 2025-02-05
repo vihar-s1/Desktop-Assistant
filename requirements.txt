@@ -28,6 +28,7 @@ speechrecognition~=3.10.0
 urllib3~=2.2.2
 wheel~=0.41.2
 wikipedia~=1.4.0
+python-dotenv~=1.0.1
 wmi~=1.5.1
 pycaw~=20240210
 feedparser~=6.0.11

@@ -42,3 +42,6 @@ $RECYCLE.BIN/
 
 # IntelliJ Idea
 .idea
+
+# Environment Variables
+.env

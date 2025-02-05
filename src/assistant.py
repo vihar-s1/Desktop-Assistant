@@ -8,12 +8,14 @@ This module contains the Assistant class, which listens to user queries and resp
 
 """
 
+import json
 import re
 import subprocess
 from datetime import datetime
 
 import commands
 from infra import clear_screen
+from utils import load_email_config
 from voice_interface import VoiceInterface
 
 LISTENING_ERROR = "Say that again please..."
@@ -133,6 +135,65 @@ class Assistant:
                 r"\b(?:of|in|at)\s+(\w+)", query
             )  # Extract the city name just after the word 'of'
             commands.weather_reporter(self.__voice_interface, cities[0])
+        elif "email" in query:
+            query = query.lower()
+
+            data = load_email_config()
+
+            if data.get("server") == "smtp.example.com":
+                self.__voice_interface.speak(
+                    "Please setup email config file before sending mail."
+                )
+            else:
+                self.__voice_interface.speak("who do you want to send email to?")
+                receiver = None
+                validEmail = False
+                while not validEmail:
+                    receiver = self.listen_for_query()
+
+                    if receiver in data.get("contacts").keys():
+                        print(
+                            f"Receiver selected from contacts: {data.get("contacts").get(receiver)}"
+                        )
+                        receiver = data.get("contacts").get(receiver)
+                        validEmail = True
+                    elif re.match(
+                        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", receiver
+                    ):
+                        validEmail = True
+                    else:
+                        self.__voice_interface.speak(
+                            "Valid Email not provided or contact does not exists"
+                        )
+
+                self.__voice_interface.speak(
+                    "What would be the subject of the message? "
+                )
+                subject = None
+                while subject is None:
+                    subject = self.listen_for_query()
+
+                self.__voice_interface.speak("What would be the body of the email?")
+                body = None
+                while body is None:
+                    body = self.listen_for_query()
+
+                print(
+                    f"Sender Address: {data.get("username")}\n"
+                    f"Receiver address: {receiver}\n"
+                    f"Subject: {subject}\n"
+                    f"Body: {body}\n"
+                )
+
+                self.__voice_interface.speak("Do You Want to send this email?")
+                response = None
+                while response is None:
+                    response = self.listen_for_query()
+                if "yes" in response.lower() or "sure" in response.lower():
+                    self.__voice_interface.speak("Sending the email")
+                    commands.send_email(self.__voice_interface, receiver, subject, body)
+                else:
+                    self.__voice_interface.speak("Request aborted by user")
 
         elif "brightness" in query:
             query = query.lower()

@@ -1,0 +1,9 @@
+{
+    "server": "smtp.example.com",
+    "port": 465,
+    "username":"no-reply@gmail.com",
+    "contacts": {
+        "ajay": "ajay@example.com", 
+        "raj": "raj@example.com"
+    }
+}

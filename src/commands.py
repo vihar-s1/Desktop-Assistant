@@ -9,10 +9,13 @@ individual features of the Assistant.
 
 """
 
+import smtplib
+import ssl
 import subprocess
 import threading
 import time
 from datetime import datetime
+from email.message import EmailMessage
 from subprocess import CalledProcessError, TimeoutExpired
 
 import feedparser
@@ -23,10 +26,12 @@ import requests
 import wikipedia
 import wmi
 from comtypes import CLSCTX_ALL
+from dotenv import dotenv_values
 from PIL import ImageGrab
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 from infra import __is_darwin, __is_posix, __is_windows, __system_os
+from utils import load_email_config
 from voice_interface import VoiceInterface
 
 SUPPORTED_FEATURES = {
@@ -41,6 +46,8 @@ SUPPORTED_FEATURES = {
 if __is_windows():
     from AppOpener import open as open_app
 ########## Conditional Imports ##########
+
+ENVIRONMENT_VARIABLES = dotenv_values(".env")
 
 
 def explain_features(vi: VoiceInterface) -> None:
@@ -451,3 +458,33 @@ def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
         f"The wind speed is expected to be {weather_data.get('wind_speed_10m')}{weather_units.get('wind_speed_10m')}, "
         "so plan accordingly."
     )
+
+
+def send_email(vi: VoiceInterface, toEmail: str, subject: str, body: str):
+    """
+    Send an email to the specified recipient.
+
+    Args:
+        vi (VoiceInterface): VoiceInterface instance used to speak.
+        toEmail (str): The recipient's email address.
+        subject (str): The subject of the email.
+        body (str): The body content of the email.
+
+    Raises:
+        ValueError: If any required parameters are missing or invalid.
+    """
+
+    data = load_email_config()
+    CONTEXT = ssl.create_default_context()
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = data.get("username")
+    msg["To"] = [toEmail]
+    msg.set_content(body)
+    server = smtplib.SMTP_SSL(data.get("server"), data.get("port"), context=CONTEXT)
+    server.login(
+        data.get("username"), ENVIRONMENT_VARIABLES.get("DESKTOP_ASSISTANT_SMTP_PWD")
+    )
+    server.send_message(msg)
+    server.quit()
+    vi.speak(f"Email sent to {toEmail}")
