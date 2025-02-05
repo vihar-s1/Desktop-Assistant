@@ -18,13 +18,18 @@ from datetime import datetime
 from email.message import EmailMessage
 from subprocess import CalledProcessError, TimeoutExpired
 
+import feedparser
 import googlesearch
 import pyautogui as pag
 import pygetwindow
 import requests
 import wikipedia
+
+import wmi
 from dotenv import dotenv_values
+from comtypes import CLSCTX_ALL
 from PIL import ImageGrab
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 from infra import __is_darwin, __is_posix, __is_windows, __system_os
 from utils import load_email_config
@@ -301,6 +306,103 @@ def simple_scroll(direction: str) -> None:
         pag.press(keys=direction, presses=25)
     else:
         print("Invalid direction")
+
+
+def brightness_control(value: int, relative: bool, toDecrease: bool):
+    """
+    Adjusts the brightness of the monitor.
+
+    Args:
+        value (int): The brightness level to set or adjust by. Should be between 0 and 100.
+        relative (bool):    If True, the brightness change is relative to the current brightness.
+                            If False, the brightness is set to the specified value.
+        toDecrease (bool):  If True, decreases the brightness by the specified value.
+                            If False, increases the brightness by the specified value. Only applicable when `relative` is True.
+
+    Raises:
+        RuntimeError: If there is an issue with accessing the brightness control methods.
+
+    Returns:
+        None
+    """
+
+    brightness_ctrl = wmi.WMI(namespace="root\\wmi")
+    methods = brightness_ctrl.WmiMonitorBrightnessMethods()[0]
+
+    if relative:
+        current_brightness = brightness_ctrl.WmiMonitorBrightness()[0].CurrentBrightness
+        set_brightnes = (
+            current_brightness - int(value)
+            if toDecrease
+            else current_brightness + int(value)
+        )
+        methods.WmiSetBrightness(set_brightnes, 0)
+    else:
+        methods.WmiSetBrightness(value, 0)
+
+
+def volume_control(value: int, relative: bool, toDecrease: bool):
+    """
+    Adjusts the master volume of the system.
+
+    Args:
+        value (int): The volume level to set or adjust by. Should be between 0 and 100.
+        relative (bool): If True, the volume change is relative to the current volume.
+                         If False, the volume is set to the specified value.
+        toDecrease (bool): If True, decreases the volume by the specified value.
+                           If False, increases the volume by the specified value. Only applicable when `relative` is True.
+
+    Raises:
+        RuntimeError: If there is an issue with accessing the audio endpoint.
+
+    Returns:
+        None
+    """
+
+    devices = AudioUtilities.GetSpeakers()
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = interface.QueryInterface(IAudioEndpointVolume)
+
+    if relative:
+        current_volume = volume.GetMasterVolumeLevelScalar() * 100
+        set_volume = (
+            current_volume - int(value) if toDecrease else current_volume + int(value)
+        )
+        print(set_volume)
+        volume.SetMasterVolumeLevelScalar(min(max(0, set_volume), 100) / 100, None)
+    else:
+        volume.SetMasterVolumeLevelScalar(min(max(0, value), 100) / 100, None)
+
+
+def fetch_news(vi: VoiceInterface, max_fetched_headlines: int) -> None:
+    """
+    Fetches and reads out the top 5 headlines from the Google News RSS feed.
+
+    This function fetches news headlines from the Google News RSS feed (specific to India in English).
+    It then reads out the top 5 headlines using the provided VoiceInterface instance. If the feed fetch is successful,
+    it reads the headlines one by one. If the fetch fails, it informs the user that the news couldn't be fetched.
+
+    Args:
+        vi (VoiceInterface): The VoiceInterface instance used to speak the news headlines.
+
+    Raises:
+        requests.exceptions.RequestException: If there is an issue while fetching the RSS feed.
+        AttributeError: If the feed does not contain expected attributes or entries.
+    """
+
+    feed_url = "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"
+
+    vi.speak("Fetching news from servers.")
+    feed = feedparser.parse(feed_url)
+    if feed.status == 200:
+        headlines_list = []
+        for entry in feed.entries[:max_fetched_headlines]:
+            headlines_list.append((entry.title).split(" -")[0])
+        vi.speak("Here are some recent news headlines.")
+        for headline in headlines_list:
+            vi.speak(headline)
+    else:
+        vi.speak("Failed to fetch the news.")
 
 
 def weather_reporter(vi: VoiceInterface, city_name: str) -> None:
