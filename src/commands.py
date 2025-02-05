@@ -24,10 +24,9 @@ import pyautogui as pag
 import pygetwindow
 import requests
 import wikipedia
-
 import wmi
-from dotenv import dotenv_values
 from comtypes import CLSCTX_ALL
+from dotenv import dotenv_values
 from PIL import ImageGrab
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
