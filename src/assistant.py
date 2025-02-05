@@ -14,6 +14,7 @@ from datetime import datetime
 
 import commands
 from infra import clear_screen
+from utils import load_email_config
 from voice_interface import VoiceInterface
 
 LISTENING_ERROR = "Say that again please..."
@@ -133,8 +134,7 @@ class Assistant:
         elif "email" in query:
             query = query.lower()
 
-            with open("./src/email_config.json", "r") as f:
-                data = json.load(f)
+            data = load_email_config()
 
             if data.get("server") == "smtp.example.com":
                 self.__voice_interface.speak(

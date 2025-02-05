@@ -9,8 +9,6 @@ individual features of the Assistant.
 
 """
 
-import json
-import os
 import smtplib
 import ssl
 import subprocess
@@ -25,9 +23,11 @@ import pyautogui as pag
 import pygetwindow
 import requests
 import wikipedia
+from dotenv import dotenv_values
 from PIL import ImageGrab
 
 from infra import __is_darwin, __is_posix, __is_windows, __system_os
+from utils import load_email_config
 from voice_interface import VoiceInterface
 
 SUPPORTED_FEATURES = {
@@ -42,6 +42,8 @@ SUPPORTED_FEATURES = {
 if __is_windows():
     from AppOpener import open as open_app
 ########## Conditional Imports ##########
+
+ENVIRONMENT_VARIABLES = dotenv_values(".env")
 
 
 def explain_features(vi: VoiceInterface) -> None:
@@ -370,9 +372,8 @@ def send_email(vi: VoiceInterface, toEmail: str, subject: str, body: str):
     Raises:
         ValueError: If any required parameters are missing or invalid.
     """
-    with open("./src/email_config.json", "r") as f:
-        data = json.load(f)
-    print(toEmail, subject, body)
+
+    data = load_email_config()
     CONTEXT = ssl.create_default_context()
     msg = EmailMessage()
     msg["Subject"] = subject
@@ -380,7 +381,9 @@ def send_email(vi: VoiceInterface, toEmail: str, subject: str, body: str):
     msg["To"] = [toEmail]
     msg.set_content(body)
     server = smtplib.SMTP_SSL(data.get("server"), data.get("port"), context=CONTEXT)
-    server.login(data.get("username"), os.environ["DESKTOP_ASSISTANT_SMTP_PWD"])
+    server.login(
+        data.get("username"), ENVIRONMENT_VARIABLES.get("DESKTOP_ASSISTANT_SMTP_PWD")
+    )
     server.send_message(msg)
     server.quit()
     vi.speak(f"Email sent to {toEmail}")
