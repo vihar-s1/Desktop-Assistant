@@ -9,6 +9,7 @@ This module contains the Assistant class, which listens to user queries and resp
 """
 
 import re
+import subprocess
 from datetime import datetime
 
 import commands
@@ -133,6 +134,57 @@ class Assistant:
             )  # Extract the city name just after the word 'of'
             commands.weather_reporter(self.__voice_interface, cities[0])
 
+        elif "brightness" in query:
+            query = query.lower()
+
+            value = re.findall(r"\b(100|[1-9]?[0-9])\b", query)
+            if len(value) == 0:
+                print("Please provide a value or input is out of range")
+            else:
+                value = min(max(0, int(value[0])), 100)
+                if "set" in query:
+                    commands.brightness_control(value, False, False)
+                else:
+                    toDecrease = "decrease" in query or "reduce" in query
+                    relative = "by" in query
+                    commands.brightness_control(value, relative, toDecrease)
+
+        elif "volume" in query:
+            query = query.lower()
+
+            value = re.findall(r"\b(100|[1-9]?[0-9])\b", query)
+            if len(value) == 0:
+                print("Please provide a value or input is out of range")
+            else:
+                value = min(max(0, int(value[0])), 100)
+                if "set" in query:
+                    commands.volume_control(value, False, False)
+                else:
+                    toDecrease = "decrease" in query or "reduce" in query
+                    relative = "by" in query
+                    commands.volume_control(value, relative, toDecrease)
+
+        elif "shutdown" in query or "shut down" in query:
+            self.__voice_interface.speak("Are you sure you want to shut down your PC?")
+            response = None
+            while response is None:
+                response = self.listen_for_query()
+            if "yes" in response.lower() or "sure" in response.lower():
+                self.__voice_interface.speak("Shutting Down your PC")
+                subprocess.run(["shutdown", "-s", "/t", "1"])
+            else:
+                self.__voice_interface.speak("Request aborted by user")
+
+        elif "restart" in query:
+            self.__voice_interface.speak("Are you sure you want to restart your PC?")
+            response = None
+            while response is None:
+                response = self.listen_for_query()
+            if "yes" in response.lower() or "sure" in response.lower():
+                self.__voice_interface.speak("Restarting your PC")
+                subprocess.run(["shutdown", "/r", "/t", "1"])
+            else:
+                self.__voice_interface.speak("Request aborted by user")
         elif "news" in query:
             commands.fetch_news(self.__voice_interface, MAX_FETCHED_HEADLINES)
 
