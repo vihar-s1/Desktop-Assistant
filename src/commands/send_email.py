@@ -1,10 +1,11 @@
-from email.message import EmailMessage
-from .voice_interface import VoiceInterface
-from .utils import load_email_config
 import smtplib
 import ssl
+from email.message import EmailMessage
+
 from dotenv import dotenv_values
 
+from .utils import load_email_config
+from .voice_interface import VoiceInterface
 
 ENVIRONMENT_VARIABLES = dotenv_values(".env")
 

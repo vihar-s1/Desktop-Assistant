@@ -14,10 +14,10 @@ import subprocess
 from datetime import datetime
 
 import commands
-from infra import clear_screen
+from commands.send_email import send_email
 from commands.utils import load_email_config
 from commands.voice_interface import VoiceInterface
-from commands.send_email import send_email
+from infra import clear_screen
 
 LISTENING_ERROR = "Say that again please..."
 MAX_FETCHED_HEADLINES = (
