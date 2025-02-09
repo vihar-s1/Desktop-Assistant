@@ -9,13 +9,11 @@ individual features of the Assistant.
 
 """
 
-import smtplib
-import ssl
+
 import subprocess
 import threading
 import time
 from datetime import datetime
-from email.message import EmailMessage
 from subprocess import CalledProcessError, TimeoutExpired
 
 import feedparser
@@ -26,13 +24,12 @@ import requests
 import wikipedia
 import wmi
 from comtypes import CLSCTX_ALL
-from dotenv import dotenv_values
 from PIL import ImageGrab
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 from infra import __is_darwin, __is_posix, __is_windows, __system_os
-from utils import load_email_config
-from voice_interface import VoiceInterface
+from commands.utils import load_email_config
+from commands.voice_interface import VoiceInterface
 
 SUPPORTED_FEATURES = {
     "search your query in google and return upto 10 results",

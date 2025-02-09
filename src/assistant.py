@@ -15,8 +15,9 @@ from datetime import datetime
 
 import commands
 from infra import clear_screen
-from utils import load_email_config
-from voice_interface import VoiceInterface
+from commands.utils import load_email_config
+from commands.voice_interface import VoiceInterface
+from commands.send_email import send_email
 
 LISTENING_ERROR = "Say that again please..."
 MAX_FETCHED_HEADLINES = (
@@ -191,7 +192,7 @@ class Assistant:
                     response = self.listen_for_query()
                 if "yes" in response.lower() or "sure" in response.lower():
                     self.__voice_interface.speak("Sending the email")
-                    commands.send_email(self.__voice_interface, receiver, subject, body)
+                    send_email(self.__voice_interface, receiver, subject, body)
                 else:
                     self.__voice_interface.speak("Request aborted by user")
 
