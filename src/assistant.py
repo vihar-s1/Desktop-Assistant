@@ -20,7 +20,10 @@ from commands.brightness_control import brightness_control
 from commands.volume_control import volume_control
 from commands.weather_reporter import weather_reporter
 from commands.voice_interface import VoiceInterface
+from commands.news_reporter import fetch_news
+from commands import scroller
 from infra import clear_screen
+
 
 LISTENING_ERROR = "Say that again please..."
 MAX_FETCHED_HEADLINES = (
@@ -118,20 +121,20 @@ class Assistant:
                     self.__scrolling_thread is None
                 ):  # Only start if not already scrolling
                     self.__scrolling_thread, self.__stop_scrolling_event = (
-                        commands.start_scrolling(direction)
+                        scroller.start_scrolling(direction)
                     )
             elif "stop scrolling" in query:
                 if self.__scrolling_thread is None:  # Only stop if already scrolling
                     return
-                commands.stop_scrolling(
+                scroller.stop_scrolling(
                     self.__scrolling_thread, self.__stop_scrolling_event
                 )
                 del self.__scrolling_thread
                 self.__scrolling_thread = None
             elif re.search(r"scroll to (up|down|left|right|top|bottom)", query):
-                commands.scroll_to(direction)
+                scroller.scroll_to(direction)
             elif re.search(r"scroll (up|down|left|right)", query):
-                commands.simple_scroll(direction)
+                scroller.simple_scroll(direction)
             else:
                 print("Scroll command not recognized")
         elif "weather" in query:
@@ -251,7 +254,7 @@ class Assistant:
             else:
                 self.__voice_interface.speak("Request aborted by user")
         elif "news" in query:
-            commands.fetch_news(self.__voice_interface, MAX_FETCHED_HEADLINES)
+            fetch_news(self.__voice_interface, MAX_FETCHED_HEADLINES)
 
         else:
             self.__voice_interface.speak("could not interpret the query")
