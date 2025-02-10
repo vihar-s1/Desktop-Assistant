@@ -17,6 +17,7 @@ import commands
 from commands.send_email import send_email
 from commands.utils import load_email_config
 from commands.brightness_control import brightness_control
+from commands.volume_control import volume_control
 from commands.voice_interface import VoiceInterface
 from infra import clear_screen
 
@@ -221,11 +222,11 @@ class Assistant:
             else:
                 value = min(max(0, int(value[0])), 100)
                 if "set" in query:
-                    commands.volume_control(value, False, False)
+                    volume_control(value, False, False)
                 else:
                     toDecrease = "decrease" in query or "reduce" in query
                     relative = "by" in query
-                    commands.volume_control(value, relative, toDecrease)
+                    volume_control(value, relative, toDecrease)
 
         elif "shutdown" in query or "shut down" in query:
             self.__voice_interface.speak("Are you sure you want to shut down your PC?")
