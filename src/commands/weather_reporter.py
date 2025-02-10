@@ -1,4 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Weather Reporter
+===============
+
+This module contains functions to fetch and report the weather conditions for a given city.
+
+Functions:
+    weather_reporter(vi: VoiceInterface, city_name: str) -> None:
+        Fetches and reports the weather conditions for a given city.
+
+        Args:
+            vi (VoiceInterface): The VoiceInterface instance used to speak the weather report.
+            city_name (str): The name of the city for which to fetch weather data.
+
+        Raises:
+            requests.exceptions.RequestException: If there is an issue with the API request.
+            IndexError: If the city name is not found in the API response.
+            KeyError: If expected weather data fields are missing from the response.
+"""
+
 import requests
+
 from .voice_interface import VoiceInterface
 
 

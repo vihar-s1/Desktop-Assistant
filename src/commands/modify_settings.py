@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Modify Settings
 ===============
@@ -13,8 +15,8 @@ Functions:
 """
 
 import wmi
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 
 def brightness_control(value: int, relative: bool, toDecrease: bool):

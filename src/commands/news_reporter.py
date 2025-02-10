@@ -1,4 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+News Reporter
+===============
+
+This module contains functions to fetch and read out the top news headlines.
+
+Functions:
+    fetch_news(vi: VoiceInterface, max_fetched_headlines: int) -> None:
+        Fetches and reads out the top headlines from the Google News RSS feed.
+
+        Args:
+            vi (VoiceInterface): The VoiceInterface instance used to speak the news headlines.
+            max_fetched_headlines (int): The maximum number of headlines to fetch and read out.
+
+        Raises:
+            requests.exceptions.RequestException: If there is an issue while fetching the RSS feed.
+            AttributeError: If the feed does not contain expected attributes or entries.
+"""
 import feedparser
+
 from .voice_interface import VoiceInterface
 
 

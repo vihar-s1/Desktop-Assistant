@@ -1,3 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Utils
+===============
+
+This module contains utility functions for the desktop assistant.
+
+Functions:
+    load_email_config() -> dict:
+        Loads the email configuration from a JSON file.
+
+        Returns:
+            dict: The email configuration data.
+"""
+
 import json
 import os
 

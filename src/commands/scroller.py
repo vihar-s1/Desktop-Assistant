@@ -1,7 +1,33 @@
-import pygetwindow
-import pyautogui as pag
-import time
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Scroller
+===============
+
+This module contains functions to handle scrolling actions for the desktop assistant.
+
+Functions:
+    start_gradual_scroll(direction: str, stop_event: threading.Event) -> None:
+        Gradually scrolls in the given direction until the stop_event is set.
+
+    start_scrolling(direction: str) -> tuple[threading.Thread, threading.Event]:
+        Starts a new thread to handle gradual scrolling.
+
+    stop_scrolling(scrolling_thread: threading.Thread, scrolling_thread_event: threading.Event) -> None:
+        Stops the scrolling thread if it is not already stopped.
+
+    scroll_to(direction: str) -> None:
+        Scrolls to the extreme in the given direction.
+
+    simple_scroll(direction: str) -> None:
+        Performs a simple scroll in the given direction by a fixed number of steps.
+"""
+
 import threading
+import time
+
+import pyautogui as pag
+import pygetwindow
 from PIL import ImageGrab
 
 

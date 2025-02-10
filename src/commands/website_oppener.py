@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Website Opener
 ===============
@@ -22,10 +24,8 @@ Functions:
 import subprocess
 from subprocess import CalledProcessError, TimeoutExpired
 
-
-from commands.voice_interface import VoiceInterface
 from commands.infra import __is_darwin, __is_posix, __is_windows, __system_os
-
+from commands.voice_interface import VoiceInterface
 
 if __is_windows():
     from AppOpener import open as open_app

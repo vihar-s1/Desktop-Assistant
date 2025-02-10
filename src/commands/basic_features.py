@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Basic Features
 ===============
@@ -23,11 +25,12 @@ Functions:
         Searches Wikipedia for the given query and returns a fixed number of sentences in response.
 """
 
-from .voice_interface import VoiceInterface
-import googlesearch
 from datetime import datetime
 
+import googlesearch
 import wikipedia
+
+from .voice_interface import VoiceInterface
 
 SUPPORTED_FEATURES = {
     "search your query in google and return upto 10 results",

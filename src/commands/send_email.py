@@ -1,3 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Send Email
+===============
+
+This module contains functions to send emails using SMTP.
+
+Functions:
+    send_email(vi: VoiceInterface, toEmail: str, subject: str, body: str) -> None:
+        Sends an email to the specified recipient.
+
+        Args:
+            vi (VoiceInterface): VoiceInterface instance used to speak.
+            toEmail (str): The recipient's email address.
+            subject (str): The subject of the email.
+            body (str): The body content of the email.
+
+        Raises:
+            ValueError: If any required parameters are missing or invalid.
+"""
+
 import smtplib
 import ssl
 from email.message import EmailMessage
