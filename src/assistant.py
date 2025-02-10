@@ -16,6 +16,7 @@ from datetime import datetime
 import commands
 from commands.send_email import send_email
 from commands.utils import load_email_config
+from commands.brightness_control import brightness_control
 from commands.voice_interface import VoiceInterface
 from infra import clear_screen
 
@@ -205,11 +206,11 @@ class Assistant:
             else:
                 value = min(max(0, int(value[0])), 100)
                 if "set" in query:
-                    commands.brightness_control(value, False, False)
+                    brightness_control(value, False, False)
                 else:
                     toDecrease = "decrease" in query or "reduce" in query
                     relative = "by" in query
-                    commands.brightness_control(value, relative, toDecrease)
+                    brightness_control(value, relative, toDecrease)
 
         elif "volume" in query:
             query = query.lower()
