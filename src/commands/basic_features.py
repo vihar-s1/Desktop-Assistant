@@ -1,3 +1,28 @@
+"""
+Basic Features
+===============
+
+This module contains basic features for the desktop assistant, including:
+
+- Explaining supported features
+- Running Google search queries
+- Telling the current time
+- Performing Wikipedia searches
+
+Functions:
+    explain_features(vi: VoiceInterface) -> None:
+        Explains the features available.
+
+    run_search_query(vi: VoiceInterface, search_query: str) -> None:
+        Performs a Google search based on some terms.
+
+    tell_time(vi: VoiceInterface) -> None:
+        Tells the current time of the day with timezone.
+
+    wikipedia_search(vi: VoiceInterface, search_query: str, sentence_count: int = 3) -> None:
+        Searches Wikipedia for the given query and returns a fixed number of sentences in response.
+"""
+
 from .voice_interface import VoiceInterface
 import googlesearch
 from datetime import datetime

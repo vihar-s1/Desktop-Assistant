@@ -13,11 +13,9 @@ import re
 import subprocess
 from datetime import datetime
 
-import commands
 from commands.send_email import send_email
 from commands.utils import load_email_config
-from commands.brightness_control import brightness_control
-from commands.volume_control import volume_control
+from commands.modify_settings import *
 from commands.weather_reporter import weather_reporter
 from commands.voice_interface import VoiceInterface
 from commands.news_reporter import fetch_news

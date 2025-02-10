@@ -1,3 +1,24 @@
+"""
+Website Opener
+===============
+
+This module contains functions to open applications or websites based on the user's query.
+It supports different operating systems including Windows, Darwin (macOS), and POSIX (Linux).
+
+Functions:
+    open_application_website(vi: VoiceInterface, search_query: str) -> None:
+        Opens the application or website using a matching path from AppPath/WebPath dictionaries.
+
+    __open_application_website_windows(vi: VoiceInterface, search_query: str) -> None:
+        Handles the opening of application/website for Windows OS.
+
+    __open_application_website_darwin(vi: VoiceInterface, search_query: str) -> None:
+        Handles the opening of application/website for Darwin OS.
+
+    __open_application_website_posix(vi: VoiceInterface, search_query: str) -> None:
+        Handles the opening of application/website for POSIX OS.
+"""
+
 import subprocess
 from subprocess import CalledProcessError, TimeoutExpired
 
