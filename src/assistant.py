@@ -264,7 +264,7 @@ class Assistant:
         self.__voice_interface.close()
         del self.__voice_interface
         if self.__scrolling_thread:
-            commands.stop_scrolling(
+            scroller.stop_scrolling(
                 self.__scrolling_thread, self.__stop_scrolling_event
             )
             del self.__scrolling_thread
