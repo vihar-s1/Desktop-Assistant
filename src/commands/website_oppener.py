@@ -1,27 +1,13 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Features
-===============
-
-This module contains all the functions pertaining to implementing the
-individual features of the Assistant.
-
-"""
-
-
 import subprocess
 from subprocess import CalledProcessError, TimeoutExpired
 
 
 from commands.voice_interface import VoiceInterface
-from infra import __is_darwin, __is_posix, __is_windows, __system_os
+from commands.infra import __is_darwin, __is_posix, __is_windows, __system_os
 
 
-########## Conditional Imports ##########
 if __is_windows():
     from AppOpener import open as open_app
-########## Conditional Imports ##########
 
 
 def open_application_website(vi: VoiceInterface, search_query: str) -> None:

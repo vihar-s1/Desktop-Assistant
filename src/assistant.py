@@ -23,7 +23,8 @@ from commands.voice_interface import VoiceInterface
 from commands.news_reporter import fetch_news
 from commands.basic_features import *
 from commands import scroller
-from infra import clear_screen
+from commands.infra import clear_screen
+from commands.website_oppener import *
 
 
 LISTENING_ERROR = "Say that again please..."
@@ -98,7 +99,7 @@ class Assistant:
                 return
             application = application[0]
             try:
-                commands.open_application_website(self.__voice_interface, application)
+                open_application_website(self.__voice_interface, application)
             except ValueError as ve:
                 print(
                     f"Error occurred while opening {application}: {ve.__class__.__name__}: {ve}"
