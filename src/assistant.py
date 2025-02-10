@@ -18,6 +18,7 @@ from commands.send_email import send_email
 from commands.utils import load_email_config
 from commands.brightness_control import brightness_control
 from commands.volume_control import volume_control
+from commands.weather_reporter import weather_reporter
 from commands.voice_interface import VoiceInterface
 from infra import clear_screen
 
@@ -137,7 +138,7 @@ class Assistant:
             cities = re.findall(
                 r"\b(?:of|in|at)\s+(\w+)", query
             )  # Extract the city name just after the word 'of'
-            commands.weather_reporter(self.__voice_interface, cities[0])
+            weather_reporter(self.__voice_interface, cities[0])
         elif "email" in query:
             query = query.lower()
 
