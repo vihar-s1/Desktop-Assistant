@@ -13,10 +13,16 @@ import re
 import subprocess
 from datetime import datetime
 
-import commands
-from infra import clear_screen
-from utils import load_email_config
-from voice_interface import VoiceInterface
+from commands import scroller
+from commands.basic_features import *
+from commands.infra import clear_screen
+from commands.modify_settings import *
+from commands.news_reporter import fetch_news
+from commands.send_email import send_email
+from commands.utils import load_email_config
+from commands.voice_interface import VoiceInterface
+from commands.weather_reporter import weather_reporter
+from commands.website_oppener import *
 
 LISTENING_ERROR = "Say that again please..."
 MAX_FETCHED_HEADLINES = (
@@ -69,19 +75,19 @@ class Assistant:
             print("No query detected. Please provide an input.")
 
         elif "what can you do" in query:
-            commands.explain_features(self.__voice_interface)
+            explain_features(self.__voice_interface)
 
         elif re.search(r"search .* (in google)?", query):
             # to convert to a generalized format
             query = query.replace(" in google", "")
             search_query = re.findall(r"search (.*)", query)[0]
-            commands.run_search_query(self.__voice_interface, search_query)
+            run_search_query(self.__voice_interface, search_query)
 
         elif "wikipedia" in query:
             # replace it only once to prevent changing the query
             query = query.replace("wikipedia", "", 1)
             search_query = query.replace("search", "", 1)
-            commands.wikipedia_search(self.__voice_interface, search_query, 3)
+            wikipedia_search(self.__voice_interface, search_query, 3)
 
         elif re.search("open .*", query):
             application = re.findall(r"open (.*)", query)
@@ -90,7 +96,7 @@ class Assistant:
                 return
             application = application[0]
             try:
-                commands.open_application_website(self.__voice_interface, application)
+                open_application_website(self.__voice_interface, application)
             except ValueError as ve:
                 print(
                     f"Error occurred while opening {application}: {ve.__class__.__name__}: {ve}"
@@ -100,7 +106,7 @@ class Assistant:
                 )
 
         elif any(text in query for text in ["the time", "time please"]):
-            commands.tell_time(self.__voice_interface)
+            tell_time(self.__voice_interface)
 
         elif "scroll" in query:
             direction = re.search(r"(up|down|left|right|top|bottom)", query)
@@ -114,27 +120,27 @@ class Assistant:
                     self.__scrolling_thread is None
                 ):  # Only start if not already scrolling
                     self.__scrolling_thread, self.__stop_scrolling_event = (
-                        commands.start_scrolling(direction)
+                        scroller.start_scrolling(direction)
                     )
             elif "stop scrolling" in query:
                 if self.__scrolling_thread is None:  # Only stop if already scrolling
                     return
-                commands.stop_scrolling(
+                scroller.stop_scrolling(
                     self.__scrolling_thread, self.__stop_scrolling_event
                 )
                 del self.__scrolling_thread
                 self.__scrolling_thread = None
             elif re.search(r"scroll to (up|down|left|right|top|bottom)", query):
-                commands.scroll_to(direction)
+                scroller.scroll_to(direction)
             elif re.search(r"scroll (up|down|left|right)", query):
-                commands.simple_scroll(direction)
+                scroller.simple_scroll(direction)
             else:
                 print("Scroll command not recognized")
         elif "weather" in query:
             cities = re.findall(
                 r"\b(?:of|in|at)\s+(\w+)", query
             )  # Extract the city name just after the word 'of'
-            commands.weather_reporter(self.__voice_interface, cities[0])
+            weather_reporter(self.__voice_interface, cities[0])
         elif "email" in query:
             query = query.lower()
 
@@ -191,7 +197,7 @@ class Assistant:
                     response = self.listen_for_query()
                 if "yes" in response.lower() or "sure" in response.lower():
                     self.__voice_interface.speak("Sending the email")
-                    commands.send_email(self.__voice_interface, receiver, subject, body)
+                    send_email(self.__voice_interface, receiver, subject, body)
                 else:
                     self.__voice_interface.speak("Request aborted by user")
 
@@ -204,11 +210,11 @@ class Assistant:
             else:
                 value = min(max(0, int(value[0])), 100)
                 if "set" in query:
-                    commands.brightness_control(value, False, False)
+                    brightness_control(value, False, False)
                 else:
                     toDecrease = "decrease" in query or "reduce" in query
                     relative = "by" in query
-                    commands.brightness_control(value, relative, toDecrease)
+                    brightness_control(value, relative, toDecrease)
 
         elif "volume" in query:
             query = query.lower()
@@ -219,11 +225,11 @@ class Assistant:
             else:
                 value = min(max(0, int(value[0])), 100)
                 if "set" in query:
-                    commands.volume_control(value, False, False)
+                    volume_control(value, False, False)
                 else:
                     toDecrease = "decrease" in query or "reduce" in query
                     relative = "by" in query
-                    commands.volume_control(value, relative, toDecrease)
+                    volume_control(value, relative, toDecrease)
 
         elif "shutdown" in query or "shut down" in query:
             self.__voice_interface.speak("Are you sure you want to shut down your PC?")
@@ -247,7 +253,7 @@ class Assistant:
             else:
                 self.__voice_interface.speak("Request aborted by user")
         elif "news" in query:
-            commands.fetch_news(self.__voice_interface, MAX_FETCHED_HEADLINES)
+            fetch_news(self.__voice_interface, MAX_FETCHED_HEADLINES)
 
         else:
             self.__voice_interface.speak("could not interpret the query")
@@ -257,7 +263,7 @@ class Assistant:
         self.__voice_interface.close()
         del self.__voice_interface
         if self.__scrolling_thread:
-            commands.stop_scrolling(
+            scroller.stop_scrolling(
                 self.__scrolling_thread, self.__stop_scrolling_event
             )
             del self.__scrolling_thread
