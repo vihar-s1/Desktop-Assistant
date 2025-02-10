@@ -21,6 +21,7 @@ from commands.volume_control import volume_control
 from commands.weather_reporter import weather_reporter
 from commands.voice_interface import VoiceInterface
 from commands.news_reporter import fetch_news
+from commands.basic_features import *
 from commands import scroller
 from infra import clear_screen
 
@@ -76,19 +77,19 @@ class Assistant:
             print("No query detected. Please provide an input.")
 
         elif "what can you do" in query:
-            commands.explain_features(self.__voice_interface)
+            explain_features(self.__voice_interface)
 
         elif re.search(r"search .* (in google)?", query):
             # to convert to a generalized format
             query = query.replace(" in google", "")
             search_query = re.findall(r"search (.*)", query)[0]
-            commands.run_search_query(self.__voice_interface, search_query)
+            run_search_query(self.__voice_interface, search_query)
 
         elif "wikipedia" in query:
             # replace it only once to prevent changing the query
             query = query.replace("wikipedia", "", 1)
             search_query = query.replace("search", "", 1)
-            commands.wikipedia_search(self.__voice_interface, search_query, 3)
+            wikipedia_search(self.__voice_interface, search_query, 3)
 
         elif re.search("open .*", query):
             application = re.findall(r"open (.*)", query)
@@ -107,7 +108,7 @@ class Assistant:
                 )
 
         elif any(text in query for text in ["the time", "time please"]):
-            commands.tell_time(self.__voice_interface)
+            tell_time(self.__voice_interface)
 
         elif "scroll" in query:
             direction = re.search(r"(up|down|left|right|top|bottom)", query)
