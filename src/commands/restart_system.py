@@ -6,13 +6,13 @@ from voice_interface import VoiceInterface
 class RestartSystem:
 
     @staticmethod
-    def commandName():
+    def command_name():
         return RestartSystem.__name__
 
     @staticmethod
-    def validateQuery(query: str) -> bool:
+    def validate_query(query: str) -> bool:
         return any(text in query for text in ["restart"])
 
     @staticmethod
-    def executeQuery(query: str, vi: VoiceInterface):
+    def execute_query(query: str, vi: VoiceInterface):
         subprocess.run(["shutdown", "/r", "/t", "1"])

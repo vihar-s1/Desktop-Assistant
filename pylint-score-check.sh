@@ -1,12 +1,12 @@
 # Get the list of changed files and calculate the total pylint score for them
 
-# Setup the project and activate the virtual environment
-bash setupProject.sh
-source .venv/bin/activate
-echo "Active Virtual Environment: ${VIRTUAL_ENV}"
+# # Setup the project and activate the virtual environment
+# bash setupProject.sh
+# source .venv/bin/activate
+# echo "Active Virtual Environment: ${VIRTUAL_ENV}"
 
-# get the list of installed python modules
-pip freeze
+# # get the list of installed python modules
+# pip freeze
 
 # Get the list of changed files
 changes=""

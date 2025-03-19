@@ -17,29 +17,29 @@ from voice_interface import VoiceInterface
 __CONFIG_DIR = os.path.join(os.path.abspath(__file__), "config")
 
 
-def __is_windows() -> bool:
+def is_windows() -> bool:
     """Returns True if the operating system is Windows"""
     return sys.platform in ["win32", "cygwin"]
 
 
-def __is_darwin() -> bool:
+def is_darwin() -> bool:
     """Returns True if the operating system is Darwin"""
     return sys.platform in ["darwin", "ios"]
 
 
-def __is_posix() -> bool:
+def is_posix() -> bool:
     """Returns True if the operating system is POSIX"""
     return sys.platform in ["aix", "android", "emscripten", "linux", "darwin", "wasi"]
 
 
-def __system_os() -> str:
+def system_os() -> str:
     """Returns the name of the operating system"""
     return sys.platform
 
 
 def clear_screen() -> None:
     """Clears the screen based on the operating system"""
-    if __is_windows():
+    if is_windows():
         os.system("cls")
     else:
         os.system("clear")
@@ -53,7 +53,7 @@ def listen(vi: VoiceInterface) -> str:
     """
     query = vi.listen(True)
     if query:
-        print(f"User:")
+        print("User:")
         vi.speak(query)
     else:
         vi.speak("Say that again please...")
@@ -72,7 +72,7 @@ def load_json_config(config_path: str) -> dict:
     file_path = os.path.join(__CONFIG_DIR, config_path)
 
     if not os.path.isfile(file_path):
-        return dict()
+        return {}
 
-    with open(config_path, "r") as json_doc:
+    with open(config_path, "r", encoding="UTF-8") as json_doc:
         return json.load(json_doc)

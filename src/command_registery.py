@@ -28,7 +28,6 @@ from commands.shutdown_system import ShutdownSystem
 from commands.volume_control import VolumeControl
 from commands.weather_reporter import WeatherReporter
 from commands.wikipedia_search import WikipediaSearch
-from infra import __is_windows
 from voice_interface import VoiceInterface
 
 SUPPORTED_FEATURES = {
@@ -38,11 +37,6 @@ SUPPORTED_FEATURES = {
     "tell you the time of the day",
     "scroll the screen with active cursor",
 }
-
-########## Conditional Imports ##########
-if __is_windows():
-    from AppOpener import open as open_app
-########## Conditional Imports ##########
 
 ENVIRONMENT_VARIABLES = dotenv_values(".env")
 
@@ -139,17 +133,17 @@ class CommandRegistery:
         self.__registery = dict[str, tuple[callable, callable]]()
 
     def register_command(
-        self, command: str, validateQuery: callable, executeQuery: callable
+        self, command: str, validate_query: callable, execute_query: callable
     ) -> None:
         """
         Registers a command with the CommandRegistery.
 
         Args:
             command (str): The command string to register.
-            validateQuery (callable): The function to validate the query for the command.
-            executeQuery (callable): The function to execute the query for the command.
+            validate_query (callable): The function to validate the query for the command.
+            execute_query (callable): The function to execute the query for the command.
         """
-        self.__registery[command] = (validateQuery, executeQuery)
+        self.__registery[command] = (validate_query, execute_query)
 
     def get_executor(self, query: str) -> tuple[str, callable]:
         """
@@ -161,9 +155,9 @@ class CommandRegistery:
         Returns:
             tuple[str, callable]: The command string and the executor function for the query.
         """
-        for command, validateQuery, executeQuery in self.__registery:
-            if validateQuery.__call__(query):
-                return command, executeQuery
+        for command, validate_query, execute_query in self.__registery:
+            if validate_query(query):
+                return command, execute_query
         return None, None
 
     def get_command(self, command: str) -> tuple[callable, callable]:
@@ -178,51 +172,55 @@ class CommandRegistery:
         if self.__registery is None:
             return None, None
 
-        self.__registery.get(key=command, default=(None, None))
+        return self.__registery.get(key=command, default=(None, None))
 
 
 INSTANCE = CommandRegistery(VoiceInterface())
 
 INSTANCE.register_command(
-    GoogleSearch.commandName(), GoogleSearch.validateQuery, GoogleSearch.executeQuery
+    GoogleSearch.command_name(), GoogleSearch.validate_query, GoogleSearch.execute_query
 )
 INSTANCE.register_command(
-    WikipediaSearch.commandName(),
-    WikipediaSearch.validateQuery,
-    WikipediaSearch.executeQuery,
+    WikipediaSearch.command_name(),
+    WikipediaSearch.validate_query,
+    WikipediaSearch.execute_query,
 )
 INSTANCE.register_command(
-    OpenApplication.commandName(),
-    OpenApplication.validateQuery,
-    OpenApplication.executeQuery,
+    OpenApplication.command_name(),
+    OpenApplication.validate_query,
+    OpenApplication.execute_query,
 )
 INSTANCE.register_command(
-    CurrentTime.commandName(), CurrentTime.validateQuery, CurrentTime.executeQuery
+    CurrentTime.command_name(), CurrentTime.validate_query, CurrentTime.execute_query
 )
 INSTANCE.register_command(
-    BrightnessControl.commandName(),
-    BrightnessControl.validateQuery,
-    BrightnessControl.executeQuery,
+    BrightnessControl.command_name(),
+    BrightnessControl.validate_query,
+    BrightnessControl.execute_query,
 )
 INSTANCE.register_command(
-    VolumeControl.commandName(), VolumeControl.validateQuery, VolumeControl.executeQuery
+    VolumeControl.command_name(),
+    VolumeControl.validate_query,
+    VolumeControl.execute_query,
 )
 INSTANCE.register_command(
-    ShutdownSystem.commandName(),
-    ShutdownSystem.validateQuery,
-    ShutdownSystem.executeQuery,
+    ShutdownSystem.command_name(),
+    ShutdownSystem.validate_query,
+    ShutdownSystem.execute_query,
 )
 INSTANCE.register_command(
-    RestartSystem.commandName(), RestartSystem.validateQuery, RestartSystem.executeQuery
+    RestartSystem.command_name(),
+    RestartSystem.validate_query,
+    RestartSystem.execute_query,
 )
 INSTANCE.register_command(
-    WeatherReporter.commandName(),
-    WeatherReporter.validateQuery,
-    WeatherReporter.executeQuery,
+    WeatherReporter.command_name(),
+    WeatherReporter.validate_query,
+    WeatherReporter.execute_query,
 )
 INSTANCE.register_command(
-    FetchNews.commandName(), FetchNews.validateQuery, FetchNews.executeQuery
+    FetchNews.command_name(), FetchNews.validate_query, FetchNews.execute_query
 )
 INSTANCE.register_command(
-    SendEmail.commandName(), SendEmail.validateQuery, SendEmail.executeQuery
+    SendEmail.command_name(), SendEmail.validate_query, SendEmail.execute_query
 )

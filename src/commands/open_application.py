@@ -1,8 +1,20 @@
+"""
+This module provides functionality to handle voice commands for opening applications or websites. 
+It includes the `OpenApplication` class, which validates and executes user queries to open 
+applications, and helper functions to handle platform-specific operations for opening applications 
+or websites.
+
+Classes:
+    OpenApplication:
+        - Handles voice commands for opening applications.
+        - Validates queries and executes commands to open specified applications.
+"""
+
 import re
 import subprocess
 from subprocess import CalledProcessError, TimeoutExpired
 
-from AppOpener import open_app
+from AppOpener import open as open_app
 
 import infra
 from voice_interface import VoiceInterface
@@ -11,15 +23,15 @@ from voice_interface import VoiceInterface
 class OpenApplication:
 
     @staticmethod
-    def commandName() -> str:
+    def command_name() -> str:
         return OpenApplication.__name__
 
     @staticmethod
-    def validateQuery(query: str) -> bool:
+    def validate_query(query: str) -> bool:
         return re.search("open .*", query)
 
     @staticmethod
-    def executeQuery(query: str, vi: VoiceInterface) -> None:
+    def execute_query(query: str, vi: VoiceInterface) -> None:
         application = re.findall(r"open (.*)", query)
         if len(application) == 0:
             vi.speak("Which Application Should I Open ?")
@@ -50,14 +62,14 @@ def open_application_website(vi: VoiceInterface, search_query: str) -> None:
     search_query = search_query.strip().lower()
 
     # use appopener to open the application only if os is windows
-    if infra.__is_windows():
+    if infra.is_windows():
         __open_application_website_windows(vi, search_query)
-    if infra.__is_darwin():
+    if infra.is_darwin():
         __open_application_website_darwin(vi, search_query)
-    elif infra.__is_posix():
+    elif infra.is_posix():
         __open_application_website_posix(vi, search_query)
     else:
-        raise ValueError(f"Unsupported OS: {infra.__system_os()}")
+        raise ValueError(f"Unsupported OS: {infra.system_os()}")
 
 
 def __open_application_website_windows(vi: VoiceInterface, search_query: str) -> None:

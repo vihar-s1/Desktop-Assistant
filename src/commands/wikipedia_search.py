@@ -4,31 +4,19 @@ from voice_interface import VoiceInterface
 
 
 class WikipediaSearch:
-    """Searches wikipedia for the given query and returns fixed number of statements in response.
-    Disambiguation Error due to multiple similar results is handled.
-    Speaks the options in this case.
-    """
 
     sentence_count = 3
 
     @staticmethod
-    def commandName() -> str:
+    def command_name() -> str:
         return WikipediaSearch.__name__
 
     @staticmethod
-    def validateQuery(query: str) -> bool:
+    def validate_query(query: str) -> bool:
         return "wikipedia" in query
 
     @staticmethod
-    def executeQuery(query: str, vi: VoiceInterface) -> None:
-        """
-        Args:
-            search_query (str): the query term to be searched in google
-        """
-        if not WikipediaSearch.validQuery(query):
-            vi.speak("Invalid Wikipedia Search Query Found!!")
-            return
-
+    def execute_query(query: str, vi: VoiceInterface) -> None:
         search_query = query.replace("wikipedia", "", 1).replace("search", "", 1)
         try:
             vi.speak("Searching Wikipedia...")

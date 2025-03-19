@@ -8,15 +8,15 @@ from voice_interface import VoiceInterface
 class BrightnessControl:
 
     @staticmethod
-    def commandName() -> str:
+    def command_name() -> str:
         return BrightnessControl.__name__
 
     @staticmethod
-    def validateQuery(query: str) -> bool:
+    def validate_query(query: str) -> bool:
         return "brightness" in query
 
     @staticmethod
-    def executeQuery(query: str, vi: VoiceInterface) -> None:
+    def execute_query(query: str, vi: VoiceInterface) -> None:
         query = query.lower()
 
         value = re.findall(r"\b(100|[1-9]?[0-9])\b", query)
@@ -41,7 +41,8 @@ def brightness_control(value: int, relative: bool, toDecrease: bool):
         relative (bool):    If True, the brightness change is relative to the current brightness.
                             If False, the brightness is set to the specified value.
         toDecrease (bool):  If True, decreases the brightness by the specified value.
-                            If False, increases the brightness by the specified value. Only applicable when `relative` is True.
+                            If False, increases the brightness by the specified value.
+                            Only applicable when `relative` is True.
 
     Raises:
         RuntimeError: If there is an issue with accessing the brightness control methods.

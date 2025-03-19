@@ -36,10 +36,10 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
         - commandName
             - No arguements
             - the `__name__` field of class as return value
-        - validateQuery
+        - validate_query
             - Single argument - query
             - Validates query and returns true if query is a match for the action
-        - executeQuery
+        - execute_query
             - Two arguments - query and voice-interface instance
             - executes the query and announces the result via the voice interface instance
     ```

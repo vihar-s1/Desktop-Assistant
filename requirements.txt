@@ -8,6 +8,7 @@ pipdeptree~=2.25.0
 PyAudio~=0.2.14
 PyAutoGUI~=0.9.54
 pycaw~=20240210
+pylint~=3.3.5
 python-dotenv~=1.0.1
 pyttsx3~=2.98
 regex~=2024.11.6

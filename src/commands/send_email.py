@@ -8,56 +8,56 @@ from dotenv import dotenv_values
 from infra import listen, load_json_config
 from voice_interface import VoiceInterface
 
-CONFIG_FILE = "mail_server.json"
-SERVER = "server"
-PORT = "port"
-EMAIL_CONTACTS = "contacts"
-SENDER = "username"
-SMTP_PASS = "SMTP_PASSWORD"
+__CONFIG_FILE__ = "mail_server.json"
+__SERVER__ = "server"
+__PORT__ = "port"
+__EMAIL_CONTACTS__ = "contacts"
+__SENDER__ = "username"
+__SMTP_PASS__ = "SMTP_PASSWORD"
 
-ENV = dotenv_values(".env")
+__ENV__ = dotenv_values(".env")
 
 
 class SendEmail:
 
     @staticmethod
-    def commandName() -> str:
+    def command_name() -> str:
         return SendEmail.__name__
 
     @staticmethod
-    def validateQuery(query: str) -> bool:
+    def validate_query(query: str) -> bool:
         return "email" in query
 
     @staticmethod
-    def executeQuery(query: str, vi: VoiceInterface) -> None:
+    def execute_query(query: str, vi: VoiceInterface) -> None:
         query = query.lower()
 
-        data = load_json_config(CONFIG_FILE)
+        data = load_json_config(__CONFIG_FILE__)
 
-        server = data.get(SERVER)
-        port = data.get(PORT)
-        sender = data.get(SENDER)
-        contacts = data.get(EMAIL_CONTACTS)
+        server = data.get(__SERVER__)
+        port = data.get(__PORT__)
+        sender = data.get(__SENDER__)
+        contacts = data.get(__EMAIL_CONTACTS__)
 
         if data.get("server") is None:
             vi.speak("Please setup email config file before sending mail.")
         else:
             vi.speak("who do you want to send email to?")
             receiver = None
-            validEmail = False
-            maxAttempts = 3
-            while not validEmail and maxAttempts > 0:
-                maxAttempts -= 1
+            valid_email = False
+            max_attempts = 3
+            while not valid_email and max_attempts > 0:
+                max_attempts -= 1
                 receiver = listen(vi).strip()
 
                 if receiver in contacts.keys():
                     print(f"Receiver selected from contacts: {contacts.get(receiver)}")
                     receiver = contacts.get(receiver)
-                    validEmail = True
+                    valid_email = True
                 elif re.match(
                     r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", receiver
                 ):
-                    validEmail = True
+                    valid_email = True
                 else:
                     vi.speak("Valid Email not provided or contact does not exists")
 
@@ -66,9 +66,9 @@ class SendEmail:
 
             vi.speak("What would be the body of the email?")
             body = None
-            maxAttemptsForBody = 3
-            while body is None and maxAttemptsForBody > 0:
-                maxAttemptsForBody -= 1
+            max_attempts_for_body = 3
+            while body is None and max_attempts_for_body > 0:
+                max_attempts_for_body -= 1
                 body = listen(vi)
 
             print(
@@ -93,12 +93,12 @@ class SendEmail:
     @staticmethod
     def __send_email(
         vi: VoiceInterface,
-        server: str,
-        port: str,
-        fromEmail: str,
-        toEmail: str,
-        subject: str,
-        body: str,
+        server: str = None,
+        port: str = None,
+        from_email: str = None,
+        to_email: str = None,
+        subject: str = None,
+        body: str = None,
     ):
         """
         Send an email to the specified recipient.
@@ -116,11 +116,11 @@ class SendEmail:
         context = ssl.create_default_context()
         msg = EmailMessage()
         msg["Subject"] = subject
-        msg["From"] = fromEmail
-        msg["To"] = [toEmail]
+        msg["From"] = from_email
+        msg["To"] = [to_email]
         msg.set_content(body)
         server = smtplib.SMTP_SSL(server, port, context=context)
-        server.login(fromEmail, ENV.get(SMTP_PASS))
+        server.login(from_email, __ENV__.get(__SMTP_PASS__))
         server.send_message(msg)
         server.quit()
-        vi.speak(f"Email sent to {toEmail}")
+        vi.speak(f"Email sent to {to_email}")

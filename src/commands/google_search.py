@@ -6,26 +6,17 @@ from voice_interface import VoiceInterface
 
 
 class GoogleSearch:
-    """Performs google search based on some terms"""
 
     @staticmethod
-    def commandName() -> str:
+    def command_name() -> str:
         return GoogleSearch.__name__
 
     @staticmethod
-    def validateQuery(query: str) -> bool:
+    def validate_query(query: str) -> bool:
         return re.search(r"search .* (in google)?", query)
 
     @staticmethod
-    def executeQuery(query: str, vi: VoiceInterface) -> None:
-        """
-        Args:
-            search_query (str): the query term to be searched in google
-        """
-        if not GoogleSearch.validQuery(query):
-            vi.speak("Invalid Google Search Query Found!!")
-            return
-
+    def execute_query(query: str, vi: VoiceInterface) -> None:
         search_query = re.findall(r"search (.*)", query.replace("in google", ""))[0]
         results = googlesearch.search(term=search_query)
         if not results:
