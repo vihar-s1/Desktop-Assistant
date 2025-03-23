@@ -26,17 +26,10 @@ A simple Python-based desktop assistant that can perform basic tasks like search
 ## 🚀 Introduction
 
 - The project is a simple Python-based desktop assistant that can perform basic tasks like searching on Google, opening applications, telling the time, and more.
-- The assistant is still in the development phase, and more features will be added in the future.
-- The assistant is built using Python and does not use any Machine Learning (ML) or Artificial Intelligence (AI) models.
+- The assistant is always under the development phase waiting for more features to be added.
+- It is built using Python and does not use any Machine Learning (ML) or Artificial Intelligence (AI) models.
 - The assistant is built using the `pyttsx3` library for text-to-speech conversion and the `speech_recognition` library for speech recognition.
 - The project is open-source and contributions and/or feature requests are always welcome.
-
-## ✨ Features
-
-- Google and Wikipedia searches 🌐
-- Open applications and websites 🚀
-- Tell time of the day in _hour **:** minute **:** second_ format ⏰
-- Scroll the screen up and down, left and right. 📜
 
 ## 🚀 Getting Started
 
@@ -106,14 +99,14 @@ objc.super(NSSpeechDriver, self).init()
 ## 🤝 Contributing
 
 - If you want to contribute, follow the contribution guidelines
-  here: [Contributing Guidelines](https://github.com/vihar-s1/Desktop-Assistant/blob/main/CONTRIBUTING.md).
+  here: [Contributing Guidelines](CONTRIBUTING.md).
   
 ## 🐞 Bug Reports and Feature Requests
 
 - If you encounter an issue or want to report a bug, following is
-  the [Bug Report Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/bug_report.md)
+  the [Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.yml)
   you will be asked to follow.
-- Any new feature requests will also be appreciated if it follows the predefined [Feature Request Template](https://github.com/vihar-s1/Desktop-Assistant/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
+- Any new feature requests will also be appreciated if it follows the predefined [Feature Request Template](.github/ISSUE_TEMPLATE/feature_request.yml).
 
 > **NOTE:** The templates are predefined and integrated in the repository so you can go to
 > the [Issues Tab](https://github.com/vihar-s1/Desktop-Assistant/issues) and start writing your bug report, or feature

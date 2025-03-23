@@ -1,5 +1,5 @@
 {
-    "server": "smtp.example.com",
+    "server": "smtp.gmail.com",
     "port": 465,
     "username":"no-reply@gmail.com",
     "contacts": {

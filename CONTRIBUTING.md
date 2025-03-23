@@ -25,12 +25,35 @@ Welcome to the open-source Voice-Assisted Desktop Assistant project! Contributio
     ```
 
 5. **_Make Changes:_** Work on the issue you're assigned to or the feature you want to add. Make sure to test your changes.
-   - Any new command added should be implemented via a function in the `commands.py` file.
-   - Any additional functionality should be added in the `infra.py` file.
-   - DO NOT DEFINE ANY GLOBAL VARIABLES IN THE `infra.py` or `commands.py`. Define a class variable inside `__init__(self)` method of `Assistant` class if you have to.
-     - All the functions implemented in the `infra.py` and `commnds.py` file should be python equivalent of _static_ methods.
+   - Any new command added should be implemented via a class defined in the `commands` directory.
+   - Any additional generic utility should be added in the `infra.py` file.
+   - DO NOT DEFINE ANY GLOBAL VARIABLES IN THE `infra.py`. Define a class variable inside `__init__(self)` method of `Assistant` class if you have to.
+     - All the functions implemented in the `infra.py` file should be python equivalent of _static_ methods.
 
-6. **_Run the Pre-commit hooks:_** The pre-commit hooks are set up to ensure that the code is formatted correctly and passes the linting checks. They are already set up in the project and configured via the `.pre-commit-config.yaml` file. To run the pre-commit hooks, use the following command:
+    ```
+    # class structure
+    - static methods
+        - commandName
+            - No arguements
+            - the `__name__` field of class as return value
+        - validate_query
+            - Single argument - query
+            - Validates query and returns true if query is a match for the action
+        - execute_query
+            - Two arguments - query and voice-interface instance
+            - executes the query and announces the result via the voice interface instance
+    ```
+
+6. **_Registering Command:_** Once the command is implemented, register the command in the `command_registery.py` file via the `register_command(command_name, validate_query, execute_query)` method of the `CommandRegistery` class.
+
+7. **_Requirements:_** If you are adding any new libraries or dependencies, make sure to update the `requirements.txt` file. To generate the updated `requirements.txt` file, run the following command:
+
+    ```bash
+    pipdeptree --warn silence | grep -E '^[a-zA-Z0-9]' | sed 's/==/~=/g' > requirements.txt
+    ```
+    - The above command will generate the `requirements.txt` file with the appropriate versions of the libraries used in the project without the nested depedencies and metadata.
+
+8. **_Run the Pre-commit hooks:_** The pre-commit hooks are set up to ensure that the code is formatted correctly and passes the linting checks. They are already set up in the project and configured via the `.pre-commit-config.yaml` file. To run the pre-commit hooks, use the following command:
      ```bash
      pre-commit run --all-files
      ```
