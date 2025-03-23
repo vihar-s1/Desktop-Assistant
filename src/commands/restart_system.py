@@ -1,7 +1,5 @@
 import subprocess
 
-from voice_interface import VoiceInterface
-
 
 class RestartSystem:
 
@@ -14,5 +12,5 @@ class RestartSystem:
         return any(text in query for text in ["restart"])
 
     @staticmethod
-    def execute_query(query: str, vi: VoiceInterface):
-        subprocess.run(["shutdown", "/r", "/t", "1"])
+    def execute_query(*_):
+        subprocess.run(["shutdown", "/r", "/t", "1"], check=True)

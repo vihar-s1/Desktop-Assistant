@@ -17,7 +17,7 @@ class FetchNews:
         return "news" in query
 
     @staticmethod
-    def execute_query(query: str, vi: VoiceInterface) -> None:
+    def execute_query(_: str, vi: VoiceInterface) -> None:
         vi.speak("Fetching news from servers.")
         feed = feedparser.parse(FetchNews.FEED_URL)
         if feed.status == 200:

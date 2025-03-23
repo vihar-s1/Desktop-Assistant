@@ -1,15 +1,3 @@
-"""
-This module provides functionality to handle voice commands for opening applications or websites. 
-It includes the `OpenApplication` class, which validates and executes user queries to open 
-applications, and helper functions to handle platform-specific operations for opening applications 
-or websites.
-
-Classes:
-    OpenApplication:
-        - Handles voice commands for opening applications.
-        - Validates queries and executes commands to open specified applications.
-"""
-
 import re
 import subprocess
 from subprocess import CalledProcessError, TimeoutExpired

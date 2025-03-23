@@ -91,15 +91,7 @@ class SendEmail:
                 vi.speak("Request aborted by user")
 
     @staticmethod
-    def __send_email(
-        vi: VoiceInterface,
-        server: str = None,
-        port: str = None,
-        from_email: str = None,
-        to_email: str = None,
-        subject: str = None,
-        body: str = None,
-    ):
+    def __send_email(*args):
         """
         Send an email to the specified recipient.
 
@@ -112,6 +104,8 @@ class SendEmail:
         Raises:
             ValueError: If any required parameters are missing or invalid.
         """
+
+        vi, server, port, from_email, to_email, subject, body = args
 
         context = ssl.create_default_context()
         msg = EmailMessage()

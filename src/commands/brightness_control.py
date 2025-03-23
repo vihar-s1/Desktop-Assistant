@@ -20,19 +20,19 @@ class BrightnessControl:
         query = query.lower()
 
         value = re.findall(r"\b(100|[1-9]?[0-9])\b", query)
-        if len(value) == 0 or str(value).isnumeric() == False:
+        if len(value) == 0 or not str(value).isnumeric():
             vi.speak("Please provide a valid brightness value between 0 and 100")
         else:
             value = min(max(0, int(value[0])), 100)
             if "set" in query:
                 brightness_control(value, False, False)
             else:
-                toDecrease = "decrease" in query or "reduce" in query
+                to_decrease = "decrease" in query or "reduce" in query
                 relative = "by" in query
-                brightness_control(value, relative, toDecrease)
+                brightness_control(value, relative, to_decrease)
 
 
-def brightness_control(value: int, relative: bool, toDecrease: bool):
+def brightness_control(value: int, relative: bool, to_decrease: bool):
     """
     Adjusts the brightness of the monitor.
 
@@ -40,7 +40,7 @@ def brightness_control(value: int, relative: bool, toDecrease: bool):
         value (int): The brightness level to set or adjust by. Should be between 0 and 100.
         relative (bool):    If True, the brightness change is relative to the current brightness.
                             If False, the brightness is set to the specified value.
-        toDecrease (bool):  If True, decreases the brightness by the specified value.
+        to_decrease (bool):  If True, decreases the brightness by the specified value.
                             If False, increases the brightness by the specified value.
                             Only applicable when `relative` is True.
 
@@ -58,7 +58,7 @@ def brightness_control(value: int, relative: bool, toDecrease: bool):
         current_brightness = brightness_ctrl.WmiMonitorBrightness()[0].CurrentBrightness
         set_brightness = (
             current_brightness - int(value)
-            if toDecrease
+            if to_decrease
             else current_brightness + int(value)
         )
         methods.WmiSetBrightness(set_brightness, 0)

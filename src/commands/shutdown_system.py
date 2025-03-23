@@ -1,13 +1,4 @@
-"""
-This module defines the `ShutdownSystem` class, which provides functionality to handle system shutdown commands. 
-It includes methods to validate user queries for shutdown-related keywords and execute the shutdown command.
-Classes:
-    ShutdownSystem: A class to validate and execute system shutdown commands.
-"""
-
 import subprocess
-
-from voice_interface import VoiceInterface
 
 
 class ShutdownSystem:
@@ -21,5 +12,5 @@ class ShutdownSystem:
         return any(text in query for text in ["shutdown", "shut down"])
 
     @staticmethod
-    def execute_query(query: str, vi: VoiceInterface):
-        subprocess.run(["shutdown", "-s", "/t", "1"])
+    def execute_query(*_):
+        subprocess.run(["shutdown", "-s", "/t", "1"], check=True)
